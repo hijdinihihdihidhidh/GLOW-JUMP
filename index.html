@@ -207,7 +207,7 @@
                 <div class="grid grid-cols-3 gap-1">
                     <button class="btn-mode active" id="btn-mode-classic" onclick="window.selectGamemode('classic')">Classic</button>
                     <button class="btn-mode" id="btn-mode-blitz" onclick="window.selectGamemode('blitz')">Blitz Gates</button>
-                    <button class="btn-mode" id="btn-mode-rule" onclick="window.selectGamemode('rule')">Rule Climb</button>
+                    <button class="btn-mode" id="btn-mode-rule" onclick="window.selectGamemode('rule')">Factor Storm</button>
                 </div>
             </div>
 
@@ -296,6 +296,11 @@
             <div class="bg-black/50 backdrop-blur-xl px-4 py-2 rounded-2xl border border-white/10 flex items-center gap-3">
                 <span class="text-xl animate-pulse">💎</span>
                 <h2 class="text-xl font-black text-white" id="current-shards">0</h2>
+            </div>
+            <!-- Neon Pink Active Heart Multiplier Overlay -->
+            <div class="bg-pink-500/10 backdrop-blur-xl px-3 py-1.5 rounded-xl border border-pink-500/30 flex items-center gap-2 text-xs hidden" id="heart-mult-badge">
+                <span class="text-pink-400 animate-pulse font-black">❤️ Overdrive Active:</span>
+                <span id="heart-mult-timer" class="font-black text-white">25s</span>
             </div>
         </div>
         <div class="flex flex-col items-end gap-2 text-right">
@@ -386,7 +391,7 @@
             "Zero was invented as a number in ancient India.",
             "Spelling out numbers? You won't use the letter 'A' until 'One Thousand'!",
             "Multiplying by 11? Just add the two digits and put the sum in the middle!",
-            "Every single odd number spelled out has an 'E' in it!",
+            "Every single odd number spelled out has 'E' in it!",
             "Honeybees build hexagons because they hold the most honey with the least wax."
         ];
 
@@ -422,13 +427,21 @@
         let nextGateY = -600;
         let activeGateQuestion = null;
         
-        // --- RULE CLIMB STATE ---
-        let currentRuleType = 'even'; // 'even', 'odd', 'multiple3', 'multiple5'
-        let ruleTargetText = 'EVEN NUMBERS';
+        // --- FACTOR STORM STATE ---
+        let currentRuleType = 'factor'; // Kept internally as factor
+        let ruleTargetValue = 24; // Target number to find factors of
+        let ruleTargetText = 'Factors of 24';
 
         // --- EASTER EGG ADMIN TRIGGER STATE ---
         let lastLabClickTimestamp = 0;
         let rapidLabClicks = 0;
+
+        // --- 💖 LIL HEART EXCLUSIVE STATE VARIABLES (OVERHAUL REBORN) ---
+        let platformCountForHeart = 0;
+        let activeHeartBoost = false;
+        let heartBoostTimerTicks = 0; // Duration limit tracking
+        let heartMultiplierActive = false;
+        let heartMultiplierTimerTicks = 0; // 25 seconds of 2.5x overdrive (25 * 60 = 1500 frames)
 
         function resize() {
             if (!canvas) return;
@@ -514,7 +527,7 @@
         }
 
         // --- GAMEMODE SELECTOR TRIGGER ---
-        window.selectGamemode = (mode) => {
+        function selectGamemode(mode) {
             activeGamemode = mode;
             
             // Clean selection visual indicators
@@ -522,7 +535,10 @@
             document.getElementById('btn-mode-blitz').classList.remove('active');
             document.getElementById('btn-mode-rule').classList.remove('active');
             
-            document.getElementById('btn-mode-' + mode).classList.add('active');
+            const selectedButton = document.getElementById('btn-mode-' + mode);
+            if (selectedButton) {
+                selectedButton.classList.add('active');
+            }
             
             const actionButton = document.getElementById('btn-start-launch');
             if (actionButton) {
@@ -532,7 +548,7 @@
                     actionButton.innerText = "LAUNCH INSTANTLY";
                 }
             }
-        };
+        }
 
         // --- SKINS INVENTORY COMPILER ---
         function renderSkinsSelector() {
@@ -567,15 +583,14 @@
             }).join('');
         }
 
-        // --- GLOBAL EXPORTS FIX ---
-        window.selectSkin = (skinId) => {
+        function selectSkin(skinId) {
             selectedSkin = skinId;
             localStorage.setItem('gj_selected_skin_v6', selectedSkin);
             renderSkinsSelector();
             updateCurrencyUI();
-        };
+        }
 
-        window.buySkin = (skinId, cost, currency) => {
+        function buySkin(skinId, cost, currency) {
             if (currency === 'sparks' && sparksBalance >= cost) {
                 sparksBalance -= cost;
                 unlockedSkins.push(skinId);
@@ -593,9 +608,9 @@
             renderSkinsSelector();
             updateCurrencyUI();
             addFloatingText(width/2, height/2, "SKIN UNLOCKED!", '#10b981');
-        };
+        }
 
-        window.craftPiSkin = () => {
+        function craftPiSkin() {
             if (piShards >= 4) {
                 piShards -= 4;
                 unlockedSkins.push('pi_skin');
@@ -607,9 +622,9 @@
             } else {
                 addFloatingText(width/2, height/2, "NEED 4 PI SHARDS!", '#ef4444');
             }
-        };
+        }
 
-        window.clickLabHeader = () => {
+        function clickLabHeader() {
             let now = Date.now();
             if (now - lastLabClickTimestamp < 600) {
                 rapidLabClicks++;
@@ -622,9 +637,9 @@
                 rapidLabClicks = 1;
             }
             lastLabClickTimestamp = now;
-        };
+        }
 
-        window.adminCheat = (type) => {
+        function adminCheat(type) {
             if (type === 'sparks') {
                 sparksBalance += 1000;
             } else if (type === 'crystals') {
@@ -657,8 +672,9 @@
             renderShops();
             updateCurrencyUI();
             addFloatingText(width/2, height/2, "SYSTEM PARAMETERS UPDATED!", '#ef4444');
-        };
+        }
 
+        // --- RENDER SHOPS COMPILER ---
         function renderShops() {
             const renderSet = (list, containerId, currency) => {
                 const cont = document.getElementById(containerId);
@@ -685,7 +701,7 @@
         }
 
         // --- GLOBALIZED buyItem ---
-        window.buyItem = (id, price, currency) => {
+        function buyItem(id, price, currency) {
             const item = [...sparkItems, ...shardItems].find(i => i.id === id);
             if (!item.consumable && inventory[id]) return;
 
@@ -704,10 +720,10 @@
             localStorage.setItem('gj_inv_v6', JSON.stringify(inventory));
             renderShops();
             updateCurrencyUI();
-        };
+        }
 
         // --- 3D STAR TUNNEL WARP ANIMATION ---
-        window.triggerCosmicWarp = () => {
+        function triggerCosmicWarp() {
             if (isWarping || !initialized) return;
             isWarping = true;
             cutsceneCanvas.style.display = 'block';
@@ -765,16 +781,16 @@
                 }
             }
             frame();
-        };
+        }
 
-        window.reverseWarp = () => {
+        function reverseWarp() {
             if (!initialized) return;
             cosmicScreen.classList.add('hidden-screen');
             homeScreen.classList.remove('hidden-screen');
-        };
+        }
 
         // --- NEW COGNITIVE LOOP START TRIGGER ---
-        window.startMathleticsSession = () => {
+        function startMathleticsSession() {
             homeScreen.classList.add('hidden-screen');
             
             if (activeGamemode === 'classic') {
@@ -789,7 +805,7 @@
             } else {
                 triggerTheatricalLaunchSequence();
             }
-        };
+        }
 
         function triggerMathQuestionPrompt() {
             document.getElementById('math-tracker').innerText = `${currentMathSessionIndex} / ${totalSessionQuestions}`;
@@ -810,7 +826,7 @@
             mathScreen.classList.remove('hidden-screen');
         }
 
-        window.submitMatheticAnswer = (chosen) => {
+        function submitMatheticAnswer(chosen) {
             const streakDisplay = document.getElementById('math-streak-val');
             
             if (chosen === mathAnswerCorrect) {
@@ -840,7 +856,7 @@
                     triggerTheatricalLaunchSequence();
                 }, 600);
             }
-        };
+        }
 
         // --- CUTSCENE: HIGH-OCTANE THEATRICAL IGNITION ---
         function triggerTheatricalLaunchSequence() {
@@ -992,6 +1008,11 @@
             crystalCombo = 0;
             feverMode = false;
             feverLockoutCooldownTicks = 0;
+            platformCountForHeart = 0;
+            activeHeartBoost = false;
+            // Clean active multiplier overlay badge if leftover
+            const multBadge = document.getElementById('heart-mult-badge');
+            if (multBadge) multBadge.classList.add('hidden');
 
             const fuelGaugeContainer = document.getElementById('fuel-gauge-container');
             
@@ -1028,7 +1049,8 @@
                 hit: true, 
                 decay: false, 
                 timer: 0,
-                ruleValue: 2 
+                ruleValue: 2,
+                hasHeart: false
             }];
             gameItems = []; 
             worldParticles = [];
@@ -1036,7 +1058,7 @@
             for(let i=1; i<15; i++) spawnPlatform(height-100 - i*150);
         };
 
-        // --- GENERATE IN-FLIGHT BLITZ OVERDRIVE GATES ---
+        // --- GENERATE IN-FLIGHT BLITZ GATES ---
         function generateInFlightBlitzGate() {
             const challenge = generateAcademyQuestion();
             activeGateQuestion = {
@@ -1050,35 +1072,28 @@
             nextGateY -= 900; 
         }
 
-        // --- GENERATE RANDOM LOGIC CLIMB RULES ---
+        // --- GENERATE RANDOM FACTOR STORM CHALLENGES ---
         function generateClimbRule() {
-            const rules = ['even', 'odd', 'multiple3', 'multiple5'];
-            currentRuleType = rules[Math.floor(Math.random() * rules.length)];
+            currentRuleType = 'factor';
             
-            if (currentRuleType === 'even') {
-                ruleTargetText = 'EVEN NUMBERS';
-            } else if (currentRuleType === 'odd') {
-                ruleTargetText = 'ODD NUMBERS';
-            } else if (currentRuleType === 'multiple3') {
-                ruleTargetText = 'MULTIPLES OF 3';
-            } else {
-                ruleTargetText = 'MULTIPLES OF 5';
-            }
+            const targets = [12, 16, 20, 24, 30, 36, 40];
+            ruleTargetValue = targets[Math.floor(Math.random() * targets.length)];
+            ruleTargetText = `Factors of ${ruleTargetValue}`;
             
-            addFloatingText(width/2, height/2 - 100, `NEW OBJECTIVE: ${ruleTargetText}`, '#06b6d4');
+            addFloatingText(width/2, height/2 - 100, `TARGET UPDATE: ${ruleTargetText}!`, '#06b6d4');
         }
 
         // --- CHECKS IF VALUE MATCHES ACTIVE LOGIC RULE ---
         function matchesClimbRule(val) {
-            if (currentRuleType === 'even') return val % 2 === 0;
-            if (currentRuleType === 'odd') return val % 2 !== 0;
-            if (currentRuleType === 'multiple3') return val % 3 === 0;
-            if (currentRuleType === 'multiple5') return val % 5 === 0;
+            if (currentRuleType === 'factor') {
+                return ruleTargetValue % val === 0;
+            }
             return true;
         }
 
         function spawnPlatform(y) {
             const currentHeight = Math.max(0, Math.floor(-y/10));
+            platformCountForHeart++;
             
             let shrinkFactor = 1;
             if (currentHeight > 200) shrinkFactor = 0.9;
@@ -1099,27 +1114,41 @@
             }
 
             // Assign numerical rules values for climbing puzzle
-            let ruleValue = Math.floor(Math.random() * 30) + 1;
+            let ruleValue = Math.floor(Math.random() * 45) + 1;
             
             // Progression overhauling with fun meme easter egg triggers!
             if (activeGamemode === 'rule') {
                 const rProb = Math.random();
                 if (rProb < 0.05) {
-                    const memes = [21, 25, 67, 42, 100, 360, 1337];
+                    const memes = [21, 25, 67, 42, 100, 360, 9];
                     ruleValue = memes[Math.floor(Math.random() * memes.length)];
                     color = '#f59e0b'; // Gold color to indicate special meme number!
-                } else if (rProb > 0.6) {
-                    if (currentRuleType === 'even') ruleValue = Math.floor(Math.random() * 15) * 2;
-                    if (currentRuleType === 'odd') ruleValue = Math.floor(Math.random() * 15) * 2 + 1;
-                    if (currentRuleType === 'multiple3') ruleValue = Math.floor(Math.random() * 10) * 3;
-                    if (currentRuleType === 'multiple5') ruleValue = Math.floor(Math.random() * 6) * 5;
+                } else if (rProb > 0.45) {
+                    // Inject real factor of current target 70% of the time so it remains playable
+                    const possibleFactors = [];
+                    for (let f = 1; f <= ruleTargetValue; f++) {
+                        if (ruleTargetValue % f === 0) possibleFactors.push(f);
+                    }
+                    if (possibleFactors.length > 0) {
+                        ruleValue = possibleFactors[Math.floor(Math.random() * possibleFactors.length)];
+                    }
                 }
             }
 
-            platforms.push({ x: px, y: y, w: w, color, hit: false, decay: decay, timer: 0, ruleValue: ruleValue });
+            // --- 💖 LIL HEART SPAWNER ENGINE (10% chance every 30 platforms) ---
+            let hasHeart = false;
+            if (platformCountForHeart >= 30) {
+                platformCountForHeart = 0; // Reset countdown
+                if (Math.random() < 0.10) {
+                    hasHeart = true;
+                    color = '#f43f5e'; // Highlight platform in glowing pink
+                }
+            }
+
+            platforms.push({ x: px, y: y, w: w, color, hit: false, decay: decay, timer: 0, ruleValue: ruleValue, hasHeart: hasHeart });
             
             const shardChance = currentHeight > 1200 ? 0.15 : 0.25;
-            if(Math.random() < shardChance) {
+            if(Math.random() < shardChance && !hasHeart) {
                 const centerOffset = 10 + Math.random() * (w - 20);
                 
                 if (Math.random() < 0.02) {
@@ -1161,6 +1190,112 @@
             }
         }
 
+        // --- 💖 EXPLODING FIREWORK SIMULATOR (VALGO SUCKS DESIGNATION) ---
+        function triggerValgoSucksFireworks(targetX, targetY) {
+            isWarping = true;
+            gameActive = false;
+            cutsceneCanvas.style.display = 'block';
+            hud.classList.add('hidden');
+
+            let start = Date.now();
+            let duration = 2800; // Expanded to display spectacular message
+
+            let particles = [];
+            // Create hundreds of glowing coordinate starbursts
+            for (let f = 0; f < 5; f++) {
+                const fx = (Math.random() * 0.6 + 0.2) * width;
+                const fy = (Math.random() * 0.4 + 0.2) * height;
+                const colors = ['#f43f5e', '#38bdf8', '#eab308', '#ec4899', '#10b981', '#a855f7'];
+                const burstColor = colors[f % colors.length];
+
+                for (let i = 0; i < 45; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 8 + 3;
+                    particles.push({
+                        x: fx, y: fy,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        life: 1.0,
+                        decay: Math.random() * 0.015 + 0.01,
+                        color: burstColor
+                    });
+                }
+            }
+
+            function fireworkFrame() {
+                let elapsed = Date.now() - start;
+                let progress = Math.min(elapsed / duration, 1);
+
+                cCtx.fillStyle = 'rgba(2, 4, 18, 0.18)';
+                cCtx.fillRect(0, 0, width, height);
+
+                // Update & draw sparks
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.08; // Gravity drift
+                    p.life -= p.decay;
+
+                    cCtx.globalAlpha = Math.max(0, p.life);
+                    cCtx.fillStyle = p.color;
+                    cCtx.beginPath();
+                    cCtx.arc(p.x, p.y, Math.max(1, p.life * 4), 0, Math.PI * 2);
+                    cCtx.fill();
+                });
+                cCtx.globalAlpha = 1.0;
+
+                // Cinematic Text Reveal
+                if (progress > 0.15) {
+                    cCtx.save();
+                    cCtx.translate(width / 2, height / 2);
+                    
+                    // Giant pulsating neon font
+                    const pulse = 1.0 + Math.sin(progress * Math.PI * 2.5) * 0.06;
+                    cCtx.scale(pulse, pulse);
+
+                    cCtx.shadowBlur = 40;
+                    cCtx.shadowColor = '#f43f5e';
+                    cCtx.fillStyle = '#ffffff';
+                    cCtx.font = '900 48px Outfit';
+                    cCtx.textAlign = 'center';
+                    cCtx.textBaseline = 'middle';
+                    cCtx.fillText("VALGO SUCKS!", 0, -10);
+
+                    cCtx.shadowBlur = 15;
+                    cCtx.fillStyle = '#f472b6';
+                    cCtx.font = '900 16px Outfit';
+                    cCtx.fillText("2.5X DOUBLE MULTIPLIER UNLOCKED!", 0, 40);
+                    cCtx.restore();
+                }
+
+                if (elapsed < duration) {
+                    requestAnimationFrame(fireworkFrame);
+                } else {
+                    isWarping = false;
+                    cutsceneCanvas.style.display = 'none';
+                    
+                    // Resume Game flight with multiplier active
+                    gameActive = true;
+                    hud.classList.remove('hidden');
+                    canvas.style.pointerEvents = 'auto';
+
+                    // Trigger 2.5x Overdrive overlay
+                    heartMultiplierActive = true;
+                    heartMultiplierTimerTicks = 1500; // 25 seconds at 60 FPS
+                    
+                    const multBadge = document.getElementById('heart-mult-badge');
+                    if (multBadge) multBadge.classList.remove('hidden');
+
+                    player.vy = -16; // soft launch back into play
+                    createBurst(player.x, player.y, '#f43f5e');
+                    triggerScreenShockwave(player.x, player.y, '#f43f5e');
+                    addFloatingText(player.x, player.y - 30, "2.5X SPEED MULTIPLIER ONLINE!", '#ec4899');
+                    screenShake = 10;
+                }
+            }
+            fireworkFrame();
+        }
+
         function triggerScreenShockwave(x, y, color) {
             shockwaves.push({ x, y, r: 10, maxRadius: 180, opacity: 1, color });
         }
@@ -1200,6 +1335,11 @@
             canvas.style.pointerEvents = 'none';
             gameActive = false;
             feverMode = false;
+            activeHeartBoost = false;
+            heartMultiplierActive = false;
+
+            const multBadge = document.getElementById('heart-mult-badge');
+            if (multBadge) multBadge.classList.add('hidden');
             
             const reachedAlt = Math.max(0, Math.floor(-cameraY/10));
             if (reachedAlt > bestAltitude) {
@@ -1324,7 +1464,6 @@
                     cCtx.fillText("360 NO-SCOPE!", 0, 0);
                 }
                 else if (memeId === 9) { // --- MAXWELL CAT OVERHAUL CHRONICLES ---
-                    // Draw a cute rotating cartoon cat face using simple geometric arcs
                     cCtx.strokeStyle = '#ffffff';
                     cCtx.fillStyle = '#94a3b8';
                     cCtx.lineWidth = 4;
@@ -1349,7 +1488,6 @@
                     cCtx.beginPath(); cCtx.arc(-15, -10, 4, 0, Math.PI*2); cCtx.fill();
                     cCtx.beginPath(); cCtx.arc(15, -10, 4, 0, Math.PI*2); cCtx.fill();
                     
-                    // Whiskers lines
                     cCtx.strokeStyle = '#fff';
                     cCtx.lineWidth = 2;
                     cCtx.beginPath(); cCtx.moveTo(-25, 0); cCtx.lineTo(-50, -5); cCtx.moveTo(-25, 10); cCtx.lineTo(-52, 12);
@@ -1420,12 +1558,40 @@
 
             if (gameActive && !isWarping) {
                 if (activeGamemode === 'classic') {
-                    if (!feverMode) {
+                    if (!feverMode && !activeHeartBoost) {
                         liveFlightFuel -= 0.12; 
                     }
                 } else if (activeGamemode === 'blitz') {
-                    if (!feverMode) {
+                    if (!feverMode && !activeHeartBoost) {
                         liveFlightFuel -= 0.22; 
+                    }
+                }
+
+                // Decrement neon pink active multiplier overlay timer
+                if (heartMultiplierActive) {
+                    heartMultiplierTimerTicks--;
+                    const remainingSeconds = Math.max(0, Math.ceil(heartMultiplierTimerTicks / 60));
+                    const badgeTimerText = document.getElementById('heart-mult-timer');
+                    if (badgeTimerText) {
+                        badgeTimerText.innerText = `${remainingSeconds}s`;
+                    }
+                    if (heartMultiplierTimerTicks <= 0) {
+                        heartMultiplierActive = false;
+                        const multBadge = document.getElementById('heart-mult-badge');
+                        if (multBadge) multBadge.classList.add('hidden');
+                        addFloatingText(player.x, player.y - 30, "MULTIPLIER COOLDOWN DISENGAGED", '#ef4444');
+                    }
+                }
+
+                // Active heart rocket boost frame tracker
+                if (activeHeartBoost) {
+                    heartBoostTimerTicks--;
+                    if (heartBoostTimerTicks <= 0) {
+                        activeHeartBoost = false;
+                        // Boost ended! Trigger spectacular "VALGO SUCKS" Firework Cutscene!
+                        triggerValgoSucksFireworks(player.x, player.y);
+                        requestAnimationFrame(gameLoop); // SAFE LOOP SCHEDULING PREVENTS FREEZING
+                        return;
                     }
                 }
 
@@ -1456,7 +1622,7 @@
                     }
                 }
 
-                let gravity = feverMode ? 0.05 : (inventory.gravity_bubble > 0 ? 0.25 : 0.45);
+                let gravity = (feverMode || activeHeartBoost) ? 0.05 : (inventory.gravity_bubble > 0 ? 0.25 : 0.45);
                 player.vy += gravity;
                 player.y += player.vy;
                 
@@ -1508,7 +1674,6 @@
                             addFloatingText(player.x, player.y - 30, "CORRECT GATE! SPEEDBURST!", '#10b981');
                             sessionSparks += 20;
                         } else {
-                            // --- "SIKE! WRONG NUMBER!" OVERLOAD AUDIO-LESS TEXT MEME ---
                             liveFlightFuel = Math.max(0, liveFlightFuel - 40); 
                             player.vy = 4; 
                             createBurst(player.x, player.y, '#ef4444');
@@ -1523,6 +1688,19 @@
                     if(player.vy > 0 && player.x + player.r > p.x && player.x - player.r < p.x+p.w && 
                        player.y+player.r > p.y && player.y+player.r < p.y+15 + player.vy) {
                         
+                        // --- 💖 TOUCH LIL HEART EXCLUSIVE PROPULSION COLLISION ---
+                        if (p.hasHeart) {
+                            p.hasHeart = false;
+                            activeHeartBoost = true;
+                            heartBoostTimerTicks = 180; // 3 seconds flight at 60 FPS
+                            player.vy = -35; // Extreme vertical rocket launch speed!
+                            
+                            triggerScreenShockwave(player.x, player.y, '#f43f5e');
+                            addFloatingText(player.x, player.y - 40, "💖 LIL HEART ACTIVATED!", '#f43f5e');
+                            addFloatingText(player.x, player.y - 15, "ROCKET WARP DETECTED!", '#ec4899');
+                            return;
+                        }
+
                         // --- INTERACTIVE MEME CHECKPOINT DETECTORS (EASTER EGGS) ---
                         const memes = [21, 25, 67, 42, 100, 360, 9];
                         if (activeGamemode === 'rule' && memes.includes(p.ruleValue)) {
@@ -1530,19 +1708,19 @@
                             return;
                         }
 
-                        // Check logic climbing rules
+                        // Check factors logic climbing rules
                         if (activeGamemode === 'rule') {
                             const valid = matchesClimbRule(p.ruleValue);
                             if (!valid) {
                                 p.y += 2000; 
                                 createBurst(player.x, player.y, '#ef4444');
                                 triggerScreenShockwave(player.x, player.y, '#ef4444');
-                                addFloatingText(player.x, player.y - 30, "CRUMBLED! WRONG NUMBER", '#ef4444');
+                                addFloatingText(player.x, player.y - 30, "CRUMBLED! NOT A FACTOR", '#ef4444');
                                 comboCount = 0;
                                 return;
                             } else {
                                 sessionSparks += 10;
-                                if (Math.random() < 0.25) {
+                                if (Math.random() < 0.2) {
                                     generateClimbRule();
                                 }
                             }
@@ -1553,7 +1731,11 @@
                         player.squishY = 0.45;
                         
                         if(!p.hit) { 
-                            sessionSparks += inventory.spark_multiplier ? 2 : 1; 
+                            let sparkEarning = inventory.spark_multiplier ? 2 : 1;
+                            // Apply 2.5x Heart Overdrive Multiplier
+                            if (heartMultiplierActive) sparkEarning = Math.round(sparkEarning * 2.5);
+                            
+                            sessionSparks += sparkEarning; 
                             p.hit = true; 
                         }
                         
@@ -1585,7 +1767,7 @@
                 });
 
                 gameItems.forEach(item => {
-                    const pullDist = feverMode ? 450 : (inventory.cosmic_magnet ? 350 : (inventory.magnet ? 160 : 0));
+                    const pullDist = (feverMode || activeHeartBoost) ? 450 : (inventory.cosmic_magnet ? 350 : (inventory.magnet ? 160 : 0));
                     const dx = item.x - player.x; const dy = item.y - player.y;
                     const d = Math.sqrt(dx*dx + dy*dy);
                     if(d < pullDist) { item.x -= dx*0.14; item.y -= dy*0.14; }
@@ -1600,12 +1782,16 @@
                             triggerScreenShockwave(item.x, item.y, '#34d399');
                             addFloatingText(item.x, item.y - 25, "PI CONSTANT SHARD! (π)", '#34d399');
                         } else {
-                            sessionShards += inventory.shard_multiplier ? 2 : 1;
+                            let crystalEarning = inventory.shard_multiplier ? 2 : 1;
+                            // Apply 2.5x Heart Overdrive Multiplier
+                            if (heartMultiplierActive) crystalEarning = Math.round(crystalEarning * 2.5);
+
+                            sessionShards += crystalEarning;
                             createBurst(item.x, item.y, '#f472b6');
                             triggerScreenShockwave(item.x, item.y, '#f472b6');
                             flashFact(); 
                             
-                            if (!feverMode && feverLockoutCooldownTicks <= 0) {
+                            if (!feverMode && feverLockoutCooldownTicks <= 0 && !activeHeartBoost) {
                                 crystalCombo++;
                                 if (crystalCombo >= 3) {
                                     activateFeverMode();
@@ -1624,14 +1810,14 @@
                 if(player.y > cameraY + height + 100) {
                     comboCount = 0; 
                     
-                    if(inventory.phoenix > 0 && !feverMode) {
+                    if(inventory.phoenix > 0 && !feverMode && !activeHeartBoost) {
                         inventory.phoenix--;
                         player.vy = -26; 
                         createBurst(player.x, player.y, '#fff');
                         triggerScreenShockwave(player.x, player.y, '#fff');
-                        localStorage.setItem('gj_inv_v5', JSON.stringify(inventory));
+                        localStorage.setItem('gj_inv_v6', JSON.stringify(inventory));
                         renderShops();
-                    } else if (feverMode) {
+                    } else if (feverMode || activeHeartBoost) {
                         player.vy = -25;
                         createBurst(player.x, player.y, '#f472b6');
                     } else {
@@ -1731,6 +1917,31 @@
                         ctx.textBaseline = 'middle';
                         ctx.fillText(p.ruleValue, p.x + p.w / 2, p.y + 7);
                     }
+
+                    // --- 💖 DRAW SPINNING HOLOGRAPHIC LIL HEART ---
+                    if (p.hasHeart) {
+                        ctx.shadowBlur = 25;
+                        ctx.shadowColor = '#f43f5e';
+                        ctx.fillStyle = '#ffffff';
+                        
+                        ctx.save();
+                        // Spin speed calculated via Frame timer
+                        const pulseScale = 1.0 + Math.sin(Date.now() / 150) * 0.15;
+                        ctx.translate(p.x + p.w / 2, p.y - 20);
+                        ctx.scale(pulseScale, pulseScale);
+                        
+                        // Heart Geometrical Vector Mapping
+                        ctx.beginPath();
+                        ctx.moveTo(0, -5);
+                        ctx.bezierCurveTo(-5, -11, -12, -7, -12, -1);
+                        ctx.bezierCurveTo(-12, 5, -5, 9, 0, 14);
+                        ctx.bezierCurveTo(5, 9, 12, 5, 12, -1);
+                        ctx.bezierCurveTo(12, -7, 5, -11, 0, -5);
+                        ctx.closePath();
+                        ctx.fillStyle = '#f43f5e';
+                        ctx.fill();
+                        ctx.restore();
+                    }
                 });
 
                 // --- DRAW IN-FLIGHT BLITZ GATES ---
@@ -1810,7 +2021,7 @@
                 player.trail.forEach((t, i) => {
                     ctx.globalAlpha = (1 - (i / 20)) * 0.5;
                     
-                    if (feverMode) {
+                    if (feverMode || activeHeartBoost) {
                         ctx.fillStyle = rainbowColors[i % 7];
                     } else if (selectedSkin === 'golden') {
                         ctx.fillStyle = `rgba(234, 179, 8, ${1 - i / 20})`;
@@ -1841,10 +2052,10 @@
                 ctx.save();
                 ctx.translate(player.x, player.y);
                 
-                ctx.shadowBlur = feverMode ? 40 : 30; 
+                ctx.shadowBlur = (feverMode || activeHeartBoost) ? 40 : 30; 
                 
-                if (feverMode) {
-                    ctx.shadowColor = '#f472b6';
+                if (feverMode || activeHeartBoost) {
+                    ctx.shadowColor = '#f43f5e';
                     ctx.fillStyle = 'white';
                 } else if (selectedSkin === 'golden') {
                     ctx.shadowColor = '#eab308';
@@ -1869,7 +2080,7 @@
                     ctx.fillStyle = 'white';
                 }
                 
-                if (selectedSkin === 'fractal' && !feverMode) {
+                if (selectedSkin === 'fractal' && !feverMode && !activeHeartBoost) {
                     ctx.beginPath();
                     for (let step = 0; step < 8; step++) {
                         ctx.rotate(Math.PI / 4);
@@ -1877,7 +2088,7 @@
                     }
                     ctx.closePath();
                     ctx.fill();
-                } else if (selectedSkin === 'prime' && !feverMode) {
+                } else if (selectedSkin === 'prime' && !feverMode && !activeHeartBoost) {
                     ctx.beginPath();
                     ctx.rect(-player.r * player.squishX, -player.r * player.squishY, player.r * 2 * player.squishX, player.r * 2 * player.squishY);
                     ctx.fill();
@@ -1888,7 +2099,7 @@
                 }
                 
                 ctx.shadowBlur = 0;
-                if (feverMode) {
+                if (feverMode || activeHeartBoost) {
                     ctx.fillStyle = '#e11d48';
                 } else if (selectedSkin === 'golden') {
                     ctx.fillStyle = '#ca8a04';
@@ -1906,13 +2117,13 @@
                     ctx.fillStyle = '#06b6d4';
                 }
                 
-                if (selectedSkin === 'pi_skin' && !feverMode) {
+                if (selectedSkin === 'pi_skin' && !feverMode && !activeHeartBoost) {
                     ctx.fillStyle = '#ffffff';
                     ctx.font = '900 12px Outfit';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillText('π', 0, 0);
-                } else if (selectedSkin === 'fibonacci' && !feverMode) {
+                } else if (selectedSkin === 'fibonacci' && !feverMode && !activeHeartBoost) {
                     ctx.fillStyle = '#ffffff';
                     ctx.font = '900 12px Outfit';
                     ctx.textAlign = 'center';
@@ -1975,7 +2186,7 @@
             if(player.vy > 0.5 && inventory.double_jump > 0) {
                 player.vy = -14; 
                 inventory.double_jump--;
-                localStorage.setItem('gj_inv_v5', JSON.stringify(inventory));
+                localStorage.setItem('gj_inv_v6', JSON.stringify(inventory));
                 renderShops();
                 createBurst(player.x, player.y, '#fff');
                 addFloatingText(player.x, player.y - 20, "DOUBLE LEAP!", '#38bdf8');
@@ -2022,12 +2233,19 @@
         }
 
         // --- GLOBAL REGISTER OF EXPORT FUNCTIONS ---
-        // Expose functions to window immediately so HTML inline handlers do not crash
+        // Expose functions to window safely
         window.triggerCosmicWarp = triggerCosmicWarp;
         window.reverseWarp = reverseWarp;
         window.startMathleticsSession = startMathleticsSession;
         window.submitMatheticAnswer = submitMatheticAnswer;
         window.selectGamemode = selectGamemode;
+        window.selectSkin = selectSkin;
+        window.buySkin = buySkin;
+        window.craftPiSkin = craftPiSkin;
+        window.clickLabHeader = clickLabHeader;
+        window.adminCheat = adminCheat;
+        window.renderShops = renderShops;
+        window.buyItem = buyItem;
 
         safeInit();
         document.addEventListener('DOMContentLoaded', safeInit);
