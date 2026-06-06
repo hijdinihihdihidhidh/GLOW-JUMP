@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Void Jump - Mathletics Arcade</title>
+    <title>Void Jump - Mathletics Cosmic Overdrive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;700;900&display=swap');
@@ -61,7 +61,7 @@
             cursor: pointer;
             border: none;
         }
-        .btn-primary:hover { transform: translateY(-3px) scale(1.02); filter: brightness(1.2); }
+        .btn-primary:hover { transform: translateY(-3px) scale(1.02); filter: brightness(1.25); }
         .btn-primary:active { transform: scale(0.96); }
         
         .btn-option {
@@ -118,7 +118,7 @@
         }
         
         .custom-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.25); border-radius: 10px; }
 
         .cosmic-g {
             cursor: pointer;
@@ -131,7 +131,7 @@
             padding: 0 4px;
             transition: transform 0.3s;
         }
-        .cosmic-g:hover { transform: scale(1.3) rotate(-10deg); filter: drop-shadow(0 0 15px #06b6d4); }
+        .cosmic-g:hover { transform: scale(1.3) rotate(-10deg); filter: drop-shadow(0 0 20px #06b6d4); }
         
         @keyframes cosmic-bg {
             0% { background-position: 0% 50%; }
@@ -169,39 +169,56 @@
     <!-- Home Screen -->
     <div id="home-screen" class="screen" onmousedown="event.stopPropagation()" ontouchstart="event.stopPropagation()">
         <div class="glass glass-float">
-            <h1 class="text-4xl font-black mb-0.5 tracking-tighter italic text-white flex items-center justify-center">
-                MATH JUM<span class="cosmic-g" onclick="window.triggerCosmicWarp()">π</span>
-            </h1>
-            <p class="text-[9px] uppercase tracking-[0.4em] text-cyan-400 mb-2 font-bold">Mathletics Arcade Platform</p>
+            <!-- Title & Mute Controller Top Row -->
+            <div class="flex justify-between items-center mb-1">
+                <h1 class="text-4xl font-black tracking-tighter italic text-white flex items-center justify-start">
+                    MATH JUM<span class="cosmic-g" onclick="window.triggerCosmicWarp()">π</span>
+                </h1>
+                <button onclick="window.toggleMute()" class="btn-mute-toggle text-[10px] bg-white/10 px-3 py-1 rounded-full border border-white/10 text-white font-bold hover:bg-white/20 transition-all cursor-pointer">🔊 Sound On</button>
+            </div>
+            <p class="text-[9px] uppercase tracking-[0.4em] text-cyan-400 mb-2 font-bold text-left">Mathletics Arcade Platform</p>
             
-            <div class="grid grid-cols-3 gap-1.5 mb-2.5">
+            <div class="grid grid-cols-4 gap-1.5 mb-2.5">
                 <div class="bg-white/5 p-1.5 rounded-xl border border-white/10">
                     <p class="text-[8px] uppercase opacity-50 font-bold mb-0.5 text-white">Sparks</p>
-                    <p class="text-sm font-black text-yellow-400" id="total-sparks">0</p>
+                    <p class="text-xs font-black text-yellow-400" id="total-sparks">0</p>
                 </div>
                 <div class="bg-white/5 p-1.5 rounded-xl border border-white/10">
                     <p class="text-[8px] uppercase opacity-50 font-bold mb-0.5 text-white">Crystals</p>
-                    <p class="text-sm font-black text-fuchsia-400" id="total-shards">0</p>
+                    <p class="text-xs font-black text-fuchsia-400" id="total-shards">0</p>
                 </div>
                 <div class="bg-white/5 p-1.5 rounded-xl border border-white/10">
                     <p class="text-[8px] uppercase opacity-50 font-bold mb-0.5 text-white">Pi Shards</p>
-                    <p class="text-sm font-black text-emerald-400" id="total-pi">0/4</p>
+                    <p class="text-xs font-black text-emerald-400" id="total-pi">0/4</p>
+                </div>
+                <div class="bg-white/5 p-1.5 rounded-xl border border-white/10">
+                    <p class="text-[8px] uppercase opacity-50 font-bold mb-0.5 text-cyan-400">Concept</p>
+                    <p class="text-xs font-black text-cyan-400" id="total-concepts">0📘</p>
                 </div>
             </div>
 
-            <!-- Altitude Leaderboard Rank -->
-            <div class="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-1.5 mb-2.5 flex justify-between items-center text-[10px]">
-                <div>
-                    <span class="text-white/40 block text-[8px] uppercase tracking-wider font-bold">Personal Record</span>
-                    <span class="text-white font-black" id="pb-altitude">0m</span>
+            <!-- 12-Tier Cosmic League Progress HUD Card -->
+            <div class="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-2.5 mb-2.5 flex flex-col text-left">
+                <div class="flex justify-between items-center mb-1 text-[11px]">
+                    <div>
+                        <span class="text-white/40 block text-[8px] uppercase tracking-wider font-bold">Record Alt</span>
+                        <span class="text-white font-black" id="pb-altitude">0m</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-cyan-400 font-bold uppercase tracking-widest text-[8px] block">League Rank</span>
+                        <span class="text-emerald-400 font-black" id="league-rank">Math Cadet</span>
+                    </div>
                 </div>
-                <div class="text-right">
-                    <span class="text-cyan-400 font-bold uppercase tracking-widest text-[8px] block">League Rank</span>
-                    <span class="text-emerald-400 font-black" id="league-rank">Math Initiate</span>
+                <div class="w-full bg-slate-950/40 rounded-full h-1.5 overflow-hidden border border-white/10 mb-1">
+                    <div id="league-progress-bar" class="bg-gradient-to-r from-cyan-400 to-emerald-400 h-full w-[10%] transition-all duration-300"></div>
+                </div>
+                <div class="flex justify-between items-center text-[7px] text-white/50 uppercase tracking-widest font-bold">
+                    <span>Active Target</span>
+                    <span id="league-progress-text">Next: Scout in 100m</span>
                 </div>
             </div>
 
-            <!-- Gamemode Selector Overhaul -->
+            <!-- Gamemode Selector -->
             <div class="mb-2.5 text-left">
                 <p class="text-[9px] opacity-40 mb-1 uppercase tracking-widest font-bold text-cyan-200">Select Gamemode</p>
                 <div class="grid grid-cols-3 gap-1">
@@ -211,10 +228,13 @@
                 </div>
             </div>
 
-            <!-- Compact Skin Selector -->
+            <!-- Elite Avatar Skin Selector -->
             <div class="mb-2.5 text-left">
-                <p class="text-[9px] opacity-40 mb-1 uppercase tracking-widest font-bold text-cyan-200">Select Propulsion Core (Skin)</p>
-                <div class="flex gap-1.5 overflow-x-auto pb-1 custom-scroll" id="skin-container">
+                <div class="flex justify-between items-center mb-1">
+                    <p class="text-[9px] opacity-40 uppercase tracking-widest font-bold text-cyan-200">Select Elite Avatar</p>
+                    <button onclick="window.decodeConceptNotebook()" class="text-[8px] bg-cyan-500/20 text-cyan-300 font-black px-2 py-0.5 rounded border border-cyan-400/30 hover:bg-cyan-500/35 transition-all">Decode Concept (Costs 3📘)</button>
+                </div>
+                <div class="flex gap-2 overflow-x-auto pb-1.5 custom-scroll" id="skin-container">
                     <!-- Dynamic skins -->
                 </div>
             </div>
@@ -225,7 +245,7 @@
         </div>
     </div>
 
-    <!-- Active Math Question Gate (Before Launching!) -->
+    <!-- Active Math Question Gate -->
     <div id="math-screen" class="screen hidden-screen" onmousedown="event.stopPropagation()" ontouchstart="event.stopPropagation()">
         <div class="glass border-cyan-400 shadow-[0_0_80px_rgba(6,182,212,0.3)]">
             <div class="flex justify-between items-center mb-3">
@@ -240,10 +260,9 @@
             </div>
 
             <div class="grid grid-cols-3 gap-2" id="math-options">
-                <!-- Injected choices -->
+                <!-- choices -->
             </div>
 
-            <!-- Pre-launch fuel status & Streak info -->
             <div class="mt-4 grid grid-cols-2 gap-2 bg-white/5 p-2.5 rounded-xl border border-white/10 text-center text-xs">
                 <div>
                     <span class="text-[9px] uppercase opacity-50 font-bold tracking-wider block mb-0.5 text-white">Brain Streak</span>
@@ -257,7 +276,7 @@
         </div>
     </div>
 
-    <!-- Secret Cosmic Lab -->
+    <!-- Cosmic Lab -->
     <div id="cosmic-screen" class="screen hidden-screen" onmousedown="event.stopPropagation()" ontouchstart="event.stopPropagation()">
         <div class="glass border-fuchsia-500/50 bg-black/95 shadow-[0_0_80px_rgba(217,70,239,0.3)]">
             <h2 class="text-3xl font-black mb-1 tracking-tighter italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-yellow-500 cursor-pointer" id="lab-header" onclick="window.clickLabHeader()">
@@ -265,7 +284,6 @@
             </h2>
             <p class="text-[10px] uppercase tracking-[0.3em] text-fuchsia-400 mb-3 font-bold">Scientific Tuning</p>
             
-            <!-- Secret Admin Panel Inner Box -->
             <div id="admin-panel" class="hidden bg-slate-950/80 border border-red-500/40 rounded-2xl p-3 mb-3 text-left">
                 <p class="text-red-400 font-bold text-[10px] uppercase tracking-wider mb-2 flex justify-between">
                     <span>⚠️ Admin Override Console</span>
@@ -275,18 +293,20 @@
                     <button class="bg-red-950/40 border border-red-500/30 text-white font-bold p-2 rounded-lg" onclick="window.adminCheat('sparks')">+1,000 Sparks</button>
                     <button class="bg-red-950/40 border border-red-500/30 text-white font-bold p-2 rounded-lg" onclick="window.adminCheat('crystals')">+10 Crystals</button>
                     <button class="bg-red-950/40 border border-red-500/30 text-white font-bold p-2 rounded-lg" onclick="window.adminCheat('pi')">+1 Pi Shard</button>
+                    <button class="bg-red-950/40 border border-red-500/30 text-white font-bold p-2 rounded-lg" onclick="window.adminCheat('concepts')">+5 Concepts📘</button>
                     <button class="bg-red-950/40 border border-red-500/30 text-red-400 font-bold p-2 rounded-lg" onclick="window.adminCheat('reset')">Clear Records</button>
                 </div>
             </div>
 
             <div id="shard-shop" class="shop-container custom-scroll"></div>
             <button onclick="window.reverseWarp()" class="mt-2 py-3 px-8 rounded-full bg-white/10 text-xs font-black text-white hover:bg-cyan-500/20 transition-all uppercase tracking-widest cursor-pointer border-none">
+                <!-- Return to Launchpad -->
                 ← Return to Launchpad
             </button>
         </div>
     </div>
 
-    <!-- HUD (Live Telemetry during Flight) -->
+    <!-- HUD -->
     <div id="hud" class="fixed top-0 left-0 w-full p-6 pointer-events-none z-[150] flex justify-between items-start hidden">
         <div class="flex flex-col gap-3">
             <div class="bg-black/50 backdrop-blur-xl px-4 py-2 rounded-2xl border border-white/10 flex items-center gap-3">
@@ -297,14 +317,26 @@
                 <span class="text-xl animate-pulse">💎</span>
                 <h2 class="text-xl font-black text-white" id="current-shards">0</h2>
             </div>
-            <!-- Neon Pink Active Heart Multiplier Overlay -->
+            <div class="bg-red-500/15 backdrop-blur-xl px-4 py-2 rounded-2xl border border-red-500/30 flex items-center gap-3 hidden" id="viggo-lives-container">
+                <span class="text-xl">❤️</span>
+                <h2 class="text-xl font-black text-white" id="viggo-lives-display">5/5</h2>
+            </div>
+            <div class="flex items-center gap-2" id="hud-powerups">
+                <div class="bg-emerald-500/10 backdrop-blur-xl px-2.5 py-1.5 rounded-xl border border-emerald-500/30 text-[10px] hidden" id="shield-active-badge">
+                    <span class="text-emerald-400 font-black">🛡️ SHIELD READY</span>
+                </div>
+                <div class="bg-amber-500/10 backdrop-blur-xl px-2.5 py-1.5 rounded-xl border border-amber-500/30 text-[10px] hidden" id="magnet-active-badge">
+                    <span class="text-amber-400 font-black">🧲 MAGNET ACTIVE</span>
+                </div>
+            </div>
             <div class="bg-pink-500/10 backdrop-blur-xl px-3 py-1.5 rounded-xl border border-pink-500/30 flex items-center gap-2 text-xs hidden" id="heart-mult-badge">
                 <span class="text-pink-400 animate-pulse font-black">❤️ Overdrive Active:</span>
                 <span id="heart-mult-timer" class="font-black text-white">25s</span>
             </div>
+            <!-- In-Flight Mute Toggle -->
+            <button onclick="window.toggleMute()" class="btn-mute-toggle pointer-events-auto text-[10px] bg-black/60 backdrop-blur-xl px-3 py-1.5 rounded-xl border border-white/10 text-white font-bold hover:bg-white/20 transition-all cursor-pointer">🔊 Sound On</button>
         </div>
         <div class="flex flex-col items-end gap-2 text-right">
-            <!-- Active Flight Fuel Gauge -->
             <div class="bg-black/75 backdrop-blur-xl px-4 py-2.5 rounded-2xl border border-cyan-500/30 min-w-[140px]" id="fuel-gauge-container">
                 <p class="text-[9px] uppercase tracking-widest font-black text-cyan-400 mb-1" id="fuel-label">Thrust Fuel Left</p>
                 <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden border border-white/10 mb-1">
@@ -329,50 +361,28 @@
     <canvas id="gameCanvas"></canvas>
 
     <script>
-        // Safely declare DOM element anchors
-        let canvas = null;
-        let ctx = null;
-        let cutsceneCanvas = null;
-        let cCtx = null;
-        let homeScreen = null;
-        let cosmicScreen = null;
-        let mathScreen = null;
-        let hud = null;
-        let initialized = false;
-        
-        // --- DATA SYSTEM ---
-        let sparksBalance = parseInt(localStorage.getItem('gj_sparks_v6')) || 0;
-        let shardsBalance = parseInt(localStorage.getItem('gj_shards_v6')) || 0;
-        let piShards = parseInt(localStorage.getItem('gj_pi_shards_v6')) || 0;
-        let bestAltitude = parseInt(localStorage.getItem('gj_best_alt_v6')) || 0;
-        
-        let selectedSkin = localStorage.getItem('gj_selected_skin_v6') || 'standard';
-        let unlockedSkins = JSON.parse(localStorage.getItem('gj_unlocked_skins_v6')) || ['standard'];
-        let activeGamemode = 'classic'; // 'classic', 'blitz', 'rule'
+        // --- 1. HOISTED TOP-LEVEL DECLARATIVE WINDOW ANCHORS & DATABASES ---
+        window.canvas = null;
+        window.ctx = null;
+        window.cutsceneCanvas = null;
+        window.cCtx = null;
+        window.homeScreen = null;
+        window.cosmicScreen = null;
+        window.mathScreen = null;
+        window.hud = null;
+        window.initialized = false;
 
-        let inventory = JSON.parse(localStorage.getItem('gj_inv_v6')) || {
-            double_jump: 0, safety_net: 0, chronos_lens: 0, jump_height: false,
-            platform_size: false, trail_rainbow: false, magnet: false, spark_multiplier: false,
-            gravity_bubble: 0, cosmic_magnet: false, shard_multiplier: false, phoenix: 0
-        };
-
-        const sparkItems = [
-            { id: 'double_jump', name: 'Probability Leap', desc: 'Jump mid-air', price: 25, consumable: true },
-            { id: 'safety_net', name: 'Pythagorean Pad', desc: 'Bounce back from 1 fall', price: 75, consumable: true },
-            { id: 'jump_height', name: 'Fibonacci Boots', desc: 'Jump higher', price: 150, consumable: false },
-            { id: 'platform_size', name: 'Fractal Expand', desc: 'Platforms grow wider', price: 250, consumable: false },
-            { id: 'trail_rainbow', name: 'Prism Stream', desc: 'Rainbow trail', price: 400, consumable: false },
-            { id: 'magnet', name: 'Vector Field', desc: 'Attract stars', price: 600, consumable: false }
+        // Base Configuration Constants
+        const rainbowColors = ['#FF4D4D', '#FFA64D', '#FFFF4D', '#4DFF4D', '#4D4DFF', '#A64DFF', '#FF4DFF'];
+        const cosmicFacts = [
+            "A 'Googol' is the number 1 followed by 100 zeros!",
+            "The Golden Ratio (1.618) is found in shells, galaxies, and flowers!",
+            "Zero was invented as a number in ancient India.",
+            "Spelling out zeros? You won't use the letter 'A' until 'One Thousand'!",
+            "Multiplying by 11? Just add the two digits and put the sum in the middle!",
+            "Every single odd number spelled out has 'E' in it!",
+            "Honeybees build hexagons because they hold the most honey with the least wax."
         ];
-
-        const shardItems = [
-            { id: 'gravity_bubble', name: 'Gravity Bubble', desc: 'Float smoothly in space', price: 2, consumable: true },
-            { id: 'cosmic_magnet', name: 'Singularity Core', desc: 'Collect items from far away', price: 5, consumable: false },
-            { id: 'phoenix', name: 'Nova Rebirth', desc: 'Saves you from falling', price: 10, consumable: true },
-            { id: 'shard_multiplier', name: 'Theorem Crystal', desc: 'Collect 2x crystals', price: 25, consumable: false }
-        ];
-
-        // OVERHAULED SKIN DATABASE
         const skinsDatabase = [
             { id: 'standard', name: 'Standard Core', costSparks: 0, costShards: 0, isPiCraft: false },
             { id: 'golden', name: 'Golden Ratio', costSparks: 150, costShards: 0, isPiCraft: false },
@@ -382,798 +392,243 @@
             { id: 'infinity', name: 'Infinity Portal', costSparks: 800, costShards: 50, isPiCraft: false },
             { id: 'pi_skin', name: '3.14159 Core', costSparks: 0, costShards: 0, isPiCraft: true }
         ];
-
-        const rainbowColors = ['#FF4D4D', '#FFA64D', '#FFFF4D', '#4DFF4D', '#4D4DFF', '#A64DFF', '#FF4DFF'];
-
-        const cosmicFacts = [
-            "A 'Googol' is the number 1 followed by 100 zeros!",
-            "The Golden Ratio (1.618) is found in shells, galaxies, and flowers!",
-            "Zero was invented as a number in ancient India.",
-            "Spelling out numbers? You won't use the letter 'A' until 'One Thousand'!",
-            "Multiplying by 11? Just add the two digits and put the sum in the middle!",
-            "Every single odd number spelled out has 'E' in it!",
-            "Honeybees build hexagons because they hold the most honey with the least wax."
+        const gangSkinsDatabase = [
+            { id: 'claren', name: 'Claren 🐨', desc: 'Spawns trees with hugged Koalas on platforms!', elite: true },
+            { id: 'sophie', name: 'Sophie 🧪', desc: 'Activates Fever at 2 crystals instead of 3, plus longer fever!', elite: true },
+            { id: 'yoon_ah', name: 'Yoon Ah ⚛️', desc: 'Permanent increased bounce/jump height!', elite: true },
+            { id: 'hubert', name: 'Hubert ⛏️', desc: 'Slightly lower jump, but massive crystal spawns!', elite: true },
+            { id: 'sean', name: 'Sean 🐬', desc: 'Water splashes on jump! Rides a neon fish in fever mode!', elite: true },
+            { id: 'curtis', name: 'Curtis 🔥', desc: 'Decreased normal jump, but extended fever & +15% Heart Spawns!', elite: true },
+            { id: 'viggo', name: 'Viggo 👑', desc: 'Has 5 lives! Fever replaced with reality-shattering inverted Fracture Mode!', elite: true }
+        ];
+        const leagueRanksDatabase = [
+            { threshold: 0, title: "Math Cadet ✏️", color: "#94a3b8" },
+            { threshold: 100, title: "Equation Scout 🔍", color: "#38bdf8" },
+            { threshold: 250, title: "Fraction Squire 🍕", color: "#f472b6" },
+            { threshold: 450, title: "Decimal Knight 🛡️", color: "#60a5fa" },
+            { threshold: 700, title: "Algebra Alchemist 🧪", color: "#a78bfa" },
+            { threshold: 1000, title: "Geometry Shaman 📐", color: "#34d399" },
+            { threshold: 1400, title: "Trig Ranger 🏹", color: "#fbbf24" },
+            { threshold: 1900, title: "Newton Disciple 🌌", color: "#c084fc" },
+            { threshold: 2500, title: "Quantum Theorist ⚛️", color: "#fb7185" },
+            { threshold: 3250, title: "Infinite Euler ♾️", color: "#22d3ee" },
+            { threshold: 4200, title: "Hyperspace Arch-Mage 🔮", color: "#f472b6" },
+            { threshold: 5300, title: "Cosmic Singularity ☄️", color: "#f59e0b" }
         ];
 
-        // --- GAME VARIABLES ---
+        // --- SHOP ITEMS ---
+        const sparkItems = [
+            { id: 'double_jump', name: 'Probability Leap', desc: 'Jump mid-air', price: 25, consumable: true },
+            { id: 'safety_net', name: 'Pythagorean Pad', desc: 'Bounce back from 1 fall', price: 75, consumable: true },
+            { id: 'jump_height', name: 'Fibonacci Boots', desc: 'Jump higher', price: 150, consumable: false },
+            { id: 'platform_size', name: 'Fractal Expand', desc: 'Platforms grow wider', price: 250, consumable: false },
+            { id: 'trail_rainbow', name: 'Prism Stream', desc: 'Rainbow trail', price: 400, consumable: false },
+            { id: 'magnet', name: 'Vector Field', desc: 'Attract stars', price: 600, consumable: false }
+        ];
+        const shardItems = [
+            { id: 'gravity_bubble', name: 'Gravity Bubble', desc: 'Float smoothly in space', price: 2, consumable: true },
+            { id: 'cosmic_magnet', name: 'Singularity Core', desc: 'Collect items from far away', price: 5, consumable: false },
+            { id: 'phoenix', name: 'Nova Rebirth', desc: 'Saves you from falling', price: 10, consumable: true },
+            { id: 'shard_multiplier', name: 'Theorem Crystal', desc: 'Collect 2x crystals', price: 25, consumable: false }
+        ];
+
+        // Core State Variables
         let width, height, gameActive = false, cameraY = 0, targetX = null;
         let sessionSparks = 0, sessionShards = 0, screenShake = 0;
         let platforms = [], gameItems = [], worldParticles = [];
         let isWarping = false;
         let player = { x: 0, y: 0, r: 14, vx: 0, vy: 0, trail: [], squishX: 1, squishY: 1 };
         
-        // --- JUICE & EFFECTS STATE ---
-        let comboCount = 0;
-        let floatingTexts = [];
-        let shockwaves = [];
-        let parallaxStars = [];
-        let feverMode = false;
-        let feverTimer = 0;
-        let crystalCombo = 0;
-        let feverLockoutCooldownTicks = 0; // prevents immediate fever spamming
+        let comboCount = 0, floatingTexts = [], shockwaves = [], parallaxStars = [];
+        let feverMode = false, feverTimer = 0, crystalCombo = 0, feverLockoutCooldownTicks = 0; 
+        let currentMathSessionIndex = 1, totalSessionQuestions = 5, calculatedThrustFuel = 0; 
+        let liveFlightFuelMax = 100, liveFlightFuel = 100, mathStreak = 0, mathActive = false, mathAnswerCorrect = null;
+        let nextGateY = -600, activeGateQuestion = null, activeGamemode = 'classic';
+        let currentRuleType = 'factor', ruleTargetValue = 24, ruleTargetText = 'Factors of 24';
+        let lastLabClickTimestamp = 0, rapidLabClicks = 0;
+        let platformCountForHeart = 0, activeHeartBoost = false, heartBoostTimerTicks = 0;
+        let heartMultiplierActive = false, heartMultiplierTimerTicks = 0;
+        let shieldActive = false, magnetActive = false, magnetTimerTicks = 0, viggoLives = 5;
+        let audioCtx = null, ambientOsc = null, ambientGain = null;
 
-        // --- NEW COGNITIVE LOOP (MATHLETICS ARCADE OVERHAUL) ---
-        let currentMathSessionIndex = 1;
-        const totalSessionQuestions = 5;
-        let calculatedThrustFuel = 0; // Accumulated flight fuel
-        let liveFlightFuelMax = 0;
-        let liveFlightFuel = 0;
-        let mathStreak = 0; // Pre-launch consecutive corrects
+        // Load Global Balances Securely
+        window.gangConceptsCount = parseInt(localStorage.getItem('gj_gang_concepts_v6')) || 0;
+        window.unlockedGangSkins = JSON.parse(localStorage.getItem('gj_unlocked_gang_skins_v6')) || [];
+        window.sparksBalance = parseInt(localStorage.getItem('gj_sparks_v6')) || 0;
+        window.shardsBalance = parseInt(localStorage.getItem('gj_shards_v6')) || 0;
+        window.piShards = parseInt(localStorage.getItem('gj_pi_shards_v6')) || 0;
+        window.bestAltitude = parseInt(localStorage.getItem('gj_best_alt_v6')) || 0;
+        window.selectedSkin = localStorage.getItem('gj_selected_skin_v6') || 'standard';
+        window.unlockedSkins = JSON.parse(localStorage.getItem('gj_unlocked_skins_v6')) || ['standard'];
+        window.isMuted = localStorage.getItem('gj_muted') === 'true';
         
-        let mathActive = false;
-        let mathAnswerCorrect = null;
+        // EXPLICIT GLOBAL BINDINGS FOR SHOP MECHANICS
+        window.inventory = JSON.parse(localStorage.getItem('gj_inv_v6')) || {
+            double_jump: 0, safety_net: 0, chronos_lens: 0, jump_height: false,
+            platform_size: false, trail_rainbow: false, magnet: false, spark_multiplier: false,
+            gravity_bubble: 0, cosmic_magnet: false, shard_multiplier: false, phoenix: 0
+        };
 
-        // --- BLITZ GATES OVERHAUL STATE ---
-        let nextGateY = -600;
-        let activeGateQuestion = null;
-        
-        // --- FACTOR STORM STATE ---
-        let currentRuleType = 'factor'; // Kept internally as factor
-        let ruleTargetValue = 24; // Target number to find factors of
-        let ruleTargetText = 'Factors of 24';
-
-        // --- EASTER EGG ADMIN TRIGGER STATE ---
-        let lastLabClickTimestamp = 0;
-        let rapidLabClicks = 0;
-
-        // --- 💖 LIL HEART EXCLUSIVE STATE VARIABLES (OVERHAUL REBORN) ---
-        let platformCountForHeart = 0;
-        let activeHeartBoost = false;
-        let heartBoostTimerTicks = 0; // Duration limit tracking
-        let heartMultiplierActive = false;
-        let heartMultiplierTimerTicks = 0; // 25 seconds of 2.5x overdrive (25 * 60 = 1500 frames)
-
-        function resize() {
-            if (!canvas) return;
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-            cutsceneCanvas.width = width;
-            cutsceneCanvas.height = height;
-        }
-
-        function initParallaxBackground() {
-            parallaxStars = [];
-            for (let i = 0; i < 120; i++) {
-                parallaxStars.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    size: Math.random() * 2 + 0.5,
-                    speed: Math.random() * 0.4 + 0.1,
-                    color: Math.random() > 0.6 ? 'rgba(34, 211, 238, 0.4)' : 'rgba(255, 255, 255, 0.3)',
-                    mathGlyph: Math.random() > 0.85 ? ['+', '-', '=', 'x', '÷', 'π', 'θ'][Math.floor(Math.random() * 7)] : null
-                });
+        // --- HOISTED CORE SYSTEM ROUTINES (PREVENTS INITIALIZATION TYPEERRORS) ---
+        function getCurrentLeagueIndex(alt) {
+            let index = 0;
+            for(let i = 0; i < leagueRanksDatabase.length; i++) {
+                if (alt >= leagueRanksDatabase[i].threshold) index = i;
             }
+            return index;
         }
 
         function updateCurrencyUI() {
             const totalSparksEl = document.getElementById('total-sparks');
             const totalShardsEl = document.getElementById('total-shards');
             const totalPiEl = document.getElementById('total-pi');
+            const totalConceptsEl = document.getElementById('total-concepts');
             const curSparksEl = document.getElementById('current-sparks');
             const curShardsEl = document.getElementById('current-shards');
             const pbAltitudeEl = document.getElementById('pb-altitude');
             const leagueRankEl = document.getElementById('league-rank');
+            const progressBar = document.getElementById('league-progress-bar');
+            const progressText = document.getElementById('league-progress-text');
 
-            if (totalSparksEl) totalSparksEl.innerText = sparksBalance;
-            if (totalShardsEl) totalShardsEl.innerText = shardsBalance;
-            if (totalPiEl) totalPiEl.innerText = `${piShards}/4`;
+            if (totalSparksEl) totalSparksEl.innerText = window.sparksBalance;
+            if (totalShardsEl) totalShardsEl.innerText = window.shardsBalance;
+            if (totalPiEl) totalPiEl.innerText = `${window.piShards}/4`;
+            if (totalConceptsEl) totalConceptsEl.innerText = `${window.gangConceptsCount}📘`;
             if (curSparksEl) curSparksEl.innerText = sessionSparks;
             if (curShardsEl) curShardsEl.innerText = sessionShards;
-            if (pbAltitudeEl) pbAltitudeEl.innerText = `${bestAltitude}m`;
+            if (pbAltitudeEl) pbAltitudeEl.innerText = `${window.bestAltitude}m`;
 
-            // League rating based on record Altitude Points
+            const currentRankIndex = getCurrentLeagueIndex(window.bestAltitude);
+            const currentRank = leagueRanksDatabase[currentRankIndex];
+            
             if (leagueRankEl) {
-                if (bestAltitude < 150) {
-                    leagueRankEl.innerText = "Math Initiate ➕";
-                } else if (bestAltitude < 350) {
-                    leagueRankEl.innerText = "Fraction Squire 🍕";
-                } else if (bestAltitude < 750) {
-                    leagueRankEl.innerText = "Algebra Sage 𝓍";
-                } else if (bestAltitude < 1500) {
-                    leagueRankEl.innerText = "Newton Disciple 📐";
-                } else {
-                    leagueRankEl.innerText = "Infinite Euler 🌌";
-                }
+                leagueRankEl.innerText = currentRank.title;
+                leagueRankEl.style.color = currentRank.color;
+            }
+
+            if (currentRankIndex < leagueRanksDatabase.length - 1) {
+                const nextRank = leagueRanksDatabase[currentRankIndex + 1];
+                const currentTierStart = currentRank.threshold;
+                const nextTierTarget = nextRank.threshold;
+                const range = nextTierTarget - currentTierStart;
+                const progress = window.bestAltitude - currentTierStart;
+                const percentage = Math.max(2, Math.min(100, (progress / range) * 100));
+
+                if (progressBar) progressBar.style.width = `${percentage}%`;
+                if (progressText) progressText.innerText = `Next Rank: ${nextRank.title} in ${nextRank.threshold - window.bestAltitude}m`;
+            } else {
+                if (progressBar) progressBar.style.width = '100%';
+                if (progressText) progressText.innerText = "MAX COSMIC RANK ACHIEVED!";
             }
             
             const altitudeEl = document.getElementById('altitude');
-            const spaceZoneEl = document.getElementById('space-zone');
-            
             if (altitudeEl) {
-                const currentHeight = Math.max(0, Math.floor(-cameraY/10));
+                const currentHeight = gameActive ? Math.max(0, Math.floor(-cameraY/10)) : 0;
                 altitudeEl.innerText = currentHeight + "m";
-                
-                // Educational Milestones based on height (Year 6 curriculum matching)
-                if (spaceZoneEl) {
-                    if (activeGamemode === 'rule') {
-                        spaceZoneEl.innerText = `Bounce: ${ruleTargetText}`;
-                    } else if (currentHeight < 200) {
-                        spaceZoneEl.innerText = "Arithmetic Arena ➕";
-                    } else if (currentHeight < 500) {
-                        spaceZoneEl.innerText = "Multiplication Matrix ✖️";
-                    } else if (currentHeight < 900) {
-                        spaceZoneEl.innerText = "BODMAS Bracket 🧮";
-                    } else if (currentHeight < 1400) {
-                        spaceZoneEl.innerText = "Fractions Frontier 🍕";
-                    } else if (currentHeight < 2000) {
-                        spaceZoneEl.innerText = "Percentage Peak 📊";
-                    } else {
-                        spaceZoneEl.innerText = "Algebra Ascension 𝓍";
-                    }
+            }
+        }
+
+        // --- RETRO SYNTH AUDIO ENGINE DEFINITIONS ---
+        function initAudio() {
+            if (window.isMuted) return;
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                startAmbientMusic();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function startAmbientMusic() {
+            if (window.isMuted) return;
+            try {
+                if (ambientOsc) return;
+                ambientOsc = audioCtx.createOscillator();
+                ambientGain = audioCtx.createGain();
+                ambientOsc.type = 'triangle';
+                ambientOsc.frequency.setValueAtTime(80, audioCtx.currentTime); 
+                ambientGain.gain.setValueAtTime(0.04, audioCtx.currentTime); 
+                ambientOsc.connect(ambientGain);
+                ambientGain.connect(audioCtx.destination);
+                ambientOsc.start();
+            } catch (e) {
+                console.warn("Ambient music oscillator failed to start", e);
+            }
+        }
+
+        function updateAmbientMusicPitch(altitude) {
+            if (audioCtx && ambientOsc && !window.isMuted) {
+                let baseFreq = 80 + Math.min(300, altitude * 0.15);
+                ambientOsc.frequency.setTargetAtTime(baseFreq, audioCtx.currentTime, 0.5);
+            }
+        }
+
+        function playSound(type) {
+            if (!audioCtx || window.isMuted) return;
+            try {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                let now = audioCtx.currentTime;
+
+                if (type === 'bounce') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.exponentialRampToValueAtTime(320, now + 0.15);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                } 
+                else if (type === 'crystal') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, now);
+                    osc.frequency.setValueAtTime(1320, now + 0.08);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } 
+                else if (type === 'pi') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); 
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
                 }
-            }
-        }
-
-        // --- GAMEMODE SELECTOR TRIGGER ---
-        function selectGamemode(mode) {
-            activeGamemode = mode;
-            
-            // Clean selection visual indicators
-            document.getElementById('btn-mode-classic').classList.remove('active');
-            document.getElementById('btn-mode-blitz').classList.remove('active');
-            document.getElementById('btn-mode-rule').classList.remove('active');
-            
-            const selectedButton = document.getElementById('btn-mode-' + mode);
-            if (selectedButton) {
-                selectedButton.classList.add('active');
-            }
-            
-            const actionButton = document.getElementById('btn-start-launch');
-            if (actionButton) {
-                if (mode === 'classic') {
-                    actionButton.innerText = "START MATH TRIAL";
-                } else {
-                    actionButton.innerText = "LAUNCH INSTANTLY";
+                else if (type === 'boost') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(100, now);
+                    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.8);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+                    osc.start(now);
+                    osc.stop(now + 0.8);
                 }
-            }
-        }
-
-        // --- SKINS INVENTORY COMPILER ---
-        function renderSkinsSelector() {
-            const container = document.getElementById('skin-container');
-            if(!container) return;
-            
-            container.innerHTML = skinsDatabase.map(skin => {
-                const isUnlocked = unlockedSkins.includes(skin.id);
-                const isSelected = selectedSkin === skin.id;
-                
-                let actionBtnHTML = '';
-                if (isSelected) {
-                    actionBtnHTML = `<span class="text-[8px] bg-emerald-500/20 text-emerald-400 font-black px-1 py-0.5 rounded border border-emerald-500/30">Active</span>`;
-                } else if (isUnlocked) {
-                    actionBtnHTML = `<button onclick="window.selectSkin('${skin.id}')" class="text-[8px] bg-white/10 text-white font-black px-1.5 py-0.5 rounded hover:bg-white/25">Use</button>`;
-                } else {
-                    if (skin.isPiCraft) {
-                        actionBtnHTML = `<button onclick="window.craftPiSkin()" class="text-[8px] bg-emerald-500 text-black font-black px-1.5 py-0.5 rounded">Craft (4π)</button>`;
-                    } else if (skin.costSparks > 0) {
-                        actionBtnHTML = `<button onclick="window.buySkin('${skin.id}', ${skin.costSparks}, 'sparks')" class="text-[8px] bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded">${skin.costSparks}✨</button>`;
-                    } else if (skin.costShards > 0) {
-                        actionBtnHTML = `<button onclick="window.buySkin('${skin.id}', ${skin.costShards}, 'shards')" class="text-[8px] bg-fuchsia-500 text-white font-black px-1.5 py-0.5 rounded">${skin.costShards}💎</button>`;
-                    }
+                else if (type === 'shatter') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
                 }
-
-                return `
-                    <div class="flex-shrink-0 flex items-center justify-between gap-2.5 p-1.5 px-2.5 bg-white/5 border border-white/10 rounded-xl">
-                        <span class="text-[10px] font-black tracking-tight text-white/80">${skin.name}</span>
-                        ${actionBtnHTML}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function selectSkin(skinId) {
-            selectedSkin = skinId;
-            localStorage.setItem('gj_selected_skin_v6', selectedSkin);
-            renderSkinsSelector();
-            updateCurrencyUI();
-        }
-
-        function buySkin(skinId, cost, currency) {
-            if (currency === 'sparks' && sparksBalance >= cost) {
-                sparksBalance -= cost;
-                unlockedSkins.push(skinId);
-            } else if (currency === 'shards' && shardsBalance >= cost) {
-                shardsBalance -= cost;
-                unlockedSkins.push(skinId);
-            } else {
-                addFloatingText(width/2, height/2, "NOT ENOUGH RESOURCES!", '#ef4444');
-                return;
-            }
-            
-            localStorage.setItem('gj_sparks_v6', sparksBalance);
-            localStorage.setItem('gj_shards_v6', shardsBalance);
-            localStorage.setItem('gj_unlocked_skins_v6', JSON.stringify(unlockedSkins));
-            renderSkinsSelector();
-            updateCurrencyUI();
-            addFloatingText(width/2, height/2, "SKIN UNLOCKED!", '#10b981');
-        }
-
-        function craftPiSkin() {
-            if (piShards >= 4) {
-                piShards -= 4;
-                unlockedSkins.push('pi_skin');
-                localStorage.setItem('gj_pi_shards_v6', piShards);
-                localStorage.setItem('gj_unlocked_skins_v6', JSON.stringify(unlockedSkins));
-                renderSkinsSelector();
-                updateCurrencyUI();
-                addFloatingText(width/2, height/2, "3.14159 SKIN UNLOCKED! 🔮", '#10b981');
-            } else {
-                addFloatingText(width/2, height/2, "NEED 4 PI SHARDS!", '#ef4444');
+            } catch (e) {
+                console.warn("Audio play blocked or failed.", e);
             }
         }
 
-        function clickLabHeader() {
-            let now = Date.now();
-            if (now - lastLabClickTimestamp < 600) {
-                rapidLabClicks++;
-                if (rapidLabClicks >= 4) { // 5 total rapid clicks
-                    document.getElementById('admin-panel').classList.remove('hidden');
-                    addFloatingText(width/2, height/2, "⚠️ SYSTEM BYPASS ACTIVE", '#ef4444');
-                    rapidLabClicks = 0;
-                }
-            } else {
-                rapidLabClicks = 1;
-            }
-            lastLabClickTimestamp = now;
-        }
-
-        function adminCheat(type) {
-            if (type === 'sparks') {
-                sparksBalance += 1000;
-            } else if (type === 'crystals') {
-                shardsBalance += 10;
-            } else if (type === 'pi') {
-                piShards = Math.min(4, piShards + 1);
-            } else if (type === 'reset') {
-                sparksBalance = 0;
-                shardsBalance = 0;
-                piShards = 0;
-                bestAltitude = 0;
-                selectedSkin = 'standard';
-                unlockedSkins = ['standard'];
-                inventory = {
-                    double_jump: 0, safety_net: 0, chronos_lens: 0, jump_height: false,
-                    platform_size: false, trail_rainbow: false, magnet: false, spark_multiplier: false,
-                    gravity_bubble: 0, cosmic_magnet: false, shard_multiplier: false, phoenix: 0
-                };
-                localStorage.clear();
-            }
-            localStorage.setItem('gj_sparks_v6', sparksBalance);
-            localStorage.setItem('gj_shards_v6', shardsBalance);
-            localStorage.setItem('gj_pi_shards_v6', piShards);
-            localStorage.setItem('gj_best_alt_v6', bestAltitude);
-            localStorage.setItem('gj_unlocked_skins_v6', JSON.stringify(unlockedSkins));
-            localStorage.setItem('gj_selected_skin_v6', selectedSkin);
-            localStorage.setItem('gj_inv_v6', JSON.stringify(inventory));
-            
-            renderSkinsSelector();
-            renderShops();
-            updateCurrencyUI();
-            addFloatingText(width/2, height/2, "SYSTEM PARAMETERS UPDATED!", '#ef4444');
-        }
-
-        // --- RENDER SHOPS COMPILER ---
-        function renderShops() {
-            const renderSet = (list, containerId, currency) => {
-                const cont = document.getElementById(containerId);
-                if(!cont) return;
-                cont.innerHTML = list.map(item => {
-                    const owned = !item.consumable && inventory[item.id];
-                    const count = item.consumable ? ` (${inventory[item.id] || 0})` : "";
-                    return `
-                        <div class="shop-item text-xs">
-                            <div class="text-left pr-4">
-                                <p class="font-bold text-white leading-snug">${item.name}${count}</p>
-                                <p class="text-[8px] text-white/40 leading-tight">${item.desc}</p>
-                            </div>
-                            <button onclick="window.buyItem('${item.id}', ${item.price}, '${currency}')" 
-                                class="bg-white/10 px-2.5 py-1.5 rounded-xl text-[9px] font-black hover:bg-white/20 transition-all text-white border border-white/5 cursor-pointer flex-shrink-0">
-                                ${owned ? 'OWNED' : item.price + (currency === 'sparks' ? '✨' : '💎')}
-                            </button>
-                        </div>
-                    `;
-                }).join('');
-            };
-            renderSet(sparkItems, 'spark-shop', 'sparks');
-            renderSet(shardItems, 'shard-shop', 'shards');
-        }
-
-        // --- GLOBALIZED buyItem ---
-        function buyItem(id, price, currency) {
-            const item = [...sparkItems, ...shardItems].find(i => i.id === id);
-            if (!item.consumable && inventory[id]) return;
-
-            if (currency === 'sparks' && sparksBalance >= price) {
-                sparksBalance -= price;
-                if (item.consumable) inventory[id] = (inventory[id] || 0) + 1;
-                else inventory[id] = true;
-            } else if (currency === 'shards' && shardsBalance >= price) {
-                shardsBalance -= price;
-                if (item.consumable) inventory[id] = (inventory[id] || 0) + 1;
-                else inventory[id] = true;
-            } else return;
-
-            localStorage.setItem('gj_sparks_v6', sparksBalance);
-            localStorage.setItem('gj_shards_v6', shardsBalance);
-            localStorage.setItem('gj_inv_v6', JSON.stringify(inventory));
-            renderShops();
-            updateCurrencyUI();
-        }
-
-        // --- 3D STAR TUNNEL WARP ANIMATION ---
-        function triggerCosmicWarp() {
-            if (isWarping || !initialized) return;
-            isWarping = true;
-            cutsceneCanvas.style.display = 'block';
-            homeScreen.classList.add('hidden-screen');
-            
-            let stars = [];
-            for (let i = 0; i < 450; i++) {
-                stars.push({
-                    x: (Math.random() - 0.5) * width * 4,
-                    y: (Math.random() - 0.5) * height * 4,
-                    z: Math.random() * width,
-                    color: Math.random() > 0.5 ? '#22d3ee' : '#d946ef'
-                });
-            }
-
-            let start = Date.now();
-            function frame() {
-                if(!isWarping) return;
-                let elapsed = Date.now() - start;
-                let progress = Math.min(elapsed / 1800, 1);
-                
-                cCtx.fillStyle = 'rgba(2, 4, 15, 0.25)';
-                cCtx.fillRect(0, 0, width, height);
-                
-                cCtx.save();
-                cCtx.translate(width / 2, height / 2);
-                cCtx.rotate(progress * Math.PI * 1.5);
-                
-                stars.forEach(s => {
-                    s.z -= (progress * 50) + 5;
-                    if (s.z <= 1) s.z = width;
-                    
-                    let sx = (s.x / s.z) * width;
-                    let sy = (s.y / s.z) * height;
-                    let size = (1 - s.z / width) * 6;
-                    
-                    cCtx.globalAlpha = (1 - s.z / width) * progress;
-                    cCtx.strokeStyle = s.color;
-                    cCtx.lineWidth = size;
-                    cCtx.lineCap = 'round';
-                    
-                    cCtx.beginPath();
-                    cCtx.moveTo(sx, sy);
-                    cCtx.lineTo(sx * (1 + progress * 0.4), sy * (1 + progress * 0.4));
-                    cCtx.stroke();
-                });
-                cCtx.restore();
-
-                if (elapsed < 1800) {
-                    requestAnimationFrame(frame);
-                } else {
-                    isWarping = false;
-                    cutsceneCanvas.style.display = 'none';
-                    cosmicScreen.classList.remove('hidden-screen');
-                }
-            }
-            frame();
-        }
-
-        function reverseWarp() {
-            if (!initialized) return;
-            cosmicScreen.classList.add('hidden-screen');
-            homeScreen.classList.remove('hidden-screen');
-        }
-
-        // --- NEW COGNITIVE LOOP START TRIGGER ---
-        function startMathleticsSession() {
-            homeScreen.classList.add('hidden-screen');
-            
-            if (activeGamemode === 'classic') {
-                currentMathSessionIndex = 1;
-                calculatedThrustFuel = 0;
-                mathStreak = 0;
-                mathActive = true;
-                document.getElementById('projected-fuel').innerText = "0 Litres";
-                document.getElementById('math-streak-val').innerText = "x1.0";
-                
-                triggerMathQuestionPrompt();
-            } else {
-                triggerTheatricalLaunchSequence();
-            }
-        }
-
-        function triggerMathQuestionPrompt() {
-            document.getElementById('math-tracker').innerText = `${currentMathSessionIndex} / ${totalSessionQuestions}`;
-            
-            const challenge = generateAcademyQuestion();
-            mathAnswerCorrect = challenge.correct;
-
-            const questionEl = document.getElementById('math-question');
-            const optionsEl = document.getElementById('math-options');
-
-            if (questionEl && optionsEl) {
-                questionEl.innerText = challenge.text;
-                optionsEl.innerHTML = challenge.choices.map(opt => `
-                    <button class="btn-option font-black text-xl" onclick="window.submitMatheticAnswer(${opt})">${opt}</button>
-                `).join('');
-            }
-
-            mathScreen.classList.remove('hidden-screen');
-        }
-
-        function submitMatheticAnswer(chosen) {
-            const streakDisplay = document.getElementById('math-streak-val');
-            
-            if (chosen === mathAnswerCorrect) {
-                mathStreak++;
-                const multiplier = 1 + (mathStreak - 1) * 0.2;
-                const bonusFuel = Math.round(40 * multiplier);
-                
-                calculatedThrustFuel += bonusFuel;
-                if (streakDisplay) streakDisplay.innerText = `x${multiplier.toFixed(1)} 🔥`;
-                addFloatingText(width / 2, height / 2, `CORRECT! +${bonusFuel}L`, '#10b981');
-            } else {
-                mathStreak = 0;
-                calculatedThrustFuel += 10;
-                if (streakDisplay) streakDisplay.innerText = "x1.0";
-                addFloatingText(width / 2, height / 2, "INCORRECT (+10L)", '#ef4444');
-            }
-
-            document.getElementById('projected-fuel').innerText = `${calculatedThrustFuel} Litres`;
-
-            currentMathSessionIndex++;
-            if (currentMathSessionIndex <= totalSessionQuestions) {
-                setTimeout(triggerMathQuestionPrompt, 300);
-            } else {
-                setTimeout(() => {
-                    mathActive = false;
-                    mathScreen.classList.add('hidden-screen');
-                    triggerTheatricalLaunchSequence();
-                }, 600);
-            }
-        }
-
-        // --- CUTSCENE: HIGH-OCTANE THEATRICAL IGNITION ---
-        function triggerTheatricalLaunchSequence() {
-            isWarping = true;
-            cutsceneCanvas.style.display = 'block';
-
-            let countdown = 3;
-            let start = Date.now();
-            
-            function countdownFrame() {
-                let elapsed = Date.now() - start;
-                cCtx.fillStyle = '#020412';
-                cCtx.fillRect(0, 0, width, height);
-
-                cCtx.strokeStyle = 'rgba(6, 182, 212, 0.1)';
-                cCtx.lineWidth = 1;
-                for(let i=0; i<width; i+=40) {
-                    cCtx.beginPath(); cCtx.moveTo(i, 0); cCtx.lineTo(i, height); cCtx.stroke();
-                }
-
-                cCtx.save();
-                cCtx.translate(width / 2, height / 2);
-                cCtx.strokeStyle = '#06b6d4';
-                cCtx.lineWidth = 5;
-                cCtx.beginPath();
-                cCtx.arc(0, 0, 90, 0, Math.PI * 2);
-                cCtx.stroke();
-                
-                let shake = countdown <= 1 ? (Math.random() - 0.5) * 20 : 0;
-                cCtx.translate(shake, shake);
-
-                cCtx.fillStyle = countdown <= 1 ? '#ef4444' : '#ffffff';
-                cCtx.font = '900 72px Outfit';
-                cCtx.textAlign = 'center';
-                cCtx.textBaseline = 'middle';
-                cCtx.fillText(countdown > 0 ? countdown : "IGNITION!", 0, 0);
-                cCtx.restore();
-
-                if (elapsed > 900) {
-                    countdown--;
-                    start = Date.now();
-                }
-
-                if (countdown >= 0) {
-                    requestAnimationFrame(countdownFrame);
-                } else {
-                    cCtx.fillStyle = '#f97316';
-                    cCtx.fillRect(0, 0, width, height);
-                    setTimeout(() => {
-                        isWarping = false;
-                        cutsceneCanvas.style.display = 'none';
-                        window.launchOrbitalFlight();
-                    }, 120);
-                }
-            }
-            countdownFrame();
-        }
-
-        // --- CORE MATH GENERATOR (YEAR 6 MENTAL MATH METHOD) ---
-        function generateAcademyQuestion() {
-            let questionText = "";
-            let correctAns = 0;
-            let options = [];
-
-            const r = Math.floor(Math.random() * 5);
-
-            if (r === 0) {
-                const a = Math.floor(Math.random() * 30) + 10;
-                const b = Math.floor(Math.random() * 30) + 10;
-                if (Math.random() > 0.5) {
-                    questionText = `${a} + ${b} = ?`;
-                    correctAns = a + b;
-                } else {
-                    const max = Math.max(a, b);
-                    const min = Math.min(a, b);
-                    questionText = `${max} - ${min} = ?`;
-                    correctAns = max - min;
-                }
-            } 
-            else if (r === 1) {
-                const a = Math.floor(Math.random() * 10) + 2;
-                const b = Math.floor(Math.random() * 10) + 2;
-                if (Math.random() > 0.5) {
-                    questionText = `${a} × ${b} = ?`;
-                    correctAns = a * b;
-                } else {
-                    const product = a * b;
-                    questionText = `${product} ÷ ${a} = ?`;
-                    correctAns = b;
-                }
-            } 
-            else if (r === 2) {
-                const a = Math.floor(Math.random() * 4) + 2; 
-                const b = Math.floor(Math.random() * 5) + 2; 
-                const c = Math.floor(Math.random() * 10) + 5; 
-                questionText = `${c} + (${a} × ${b}) = ?`;
-                correctAns = c + (a * b);
-            } 
-            else if (r === 3) {
-                const fractionIndex = Math.floor(Math.random() * 2);
-                if (fractionIndex === 0) {
-                    const num = (Math.floor(Math.random() * 12) + 4) * 2;
-                    questionText = `1/2 of ${num} = ?`;
-                    correctAns = num / 2;
-                } else {
-                    const num = (Math.floor(Math.random() * 8) + 4) * 4;
-                    questionText = `3/4 of ${num} = ?`;
-                    correctAns = (num / 4) * 3;
-                }
-            } 
-            else {
-                if (Math.random() > 0.5) {
-                    const base = (Math.floor(Math.random() * 6) + 1) * 10;
-                    questionText = `50% of ${base} = ?`;
-                    correctAns = base / 2;
-                } else {
-                    const x = Math.floor(Math.random() * 8) + 2;
-                    const mult = Math.floor(Math.random() * 4) + 2;
-                    const res = x * mult;
-                    questionText = `If ${mult}x = ${res}, then x = ?`;
-                    correctAns = x;
-                }
-            }
-
-            options.push(correctAns);
-            while (options.length < 3) {
-                const diff = (Math.floor(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
-                const wrongOpt = correctAns + diff;
-                if (wrongOpt >= 0 && !options.includes(wrongOpt)) {
-                    options.push(wrongOpt);
-                }
-            }
-
-            options.sort(() => Math.random() - 0.5);
-
-            return { text: questionText, correct: correctAns, choices: options };
-        }
-
-        // --- FLIGHT LAUNCH ENTRY ---
-        window.launchOrbitalFlight = () => {
-            canvas.style.pointerEvents = 'auto'; 
-            gameActive = true;
-            hud.classList.remove('hidden');
-            
-            sessionSparks = 0; 
-            sessionShards = 0; 
-            cameraY = 0;
-            comboCount = 0;
-            crystalCombo = 0;
-            feverMode = false;
-            feverLockoutCooldownTicks = 0;
-            platformCountForHeart = 0;
-            activeHeartBoost = false;
-            // Clean active multiplier overlay badge if leftover
-            const multBadge = document.getElementById('heart-mult-badge');
-            if (multBadge) multBadge.classList.add('hidden');
-
-            const fuelGaugeContainer = document.getElementById('fuel-gauge-container');
-            
-            if (activeGamemode === 'classic') {
-                if (fuelGaugeContainer) fuelGaugeContainer.style.display = 'block';
-                liveFlightFuelMax = calculatedThrustFuel;
-                liveFlightFuel = calculatedThrustFuel;
-            } else if (activeGamemode === 'blitz') {
-                if (fuelGaugeContainer) fuelGaugeContainer.style.display = 'block';
-                liveFlightFuelMax = 150;
-                liveFlightFuel = 150;
-                nextGateY = -600;
-                generateInFlightBlitzGate();
-            } else if (activeGamemode === 'rule') {
-                if (fuelGaugeContainer) fuelGaugeContainer.style.display = 'none';
-                generateClimbRule();
-            }
-
-            player.x = width/2; 
-            player.y = height-150; 
-            player.vy = -22; 
-            player.vx = 0;
-            player.trail = [];
-            player.squishX = 1;
-            player.squishY = 1;
-            floatingTexts = [];
-            shockwaves = [];
-            
-            platforms = [{ 
-                x: width/2-75, 
-                y: height-100, 
-                w: inventory.platform_size ? 200 : 150, 
-                color: '#fff', 
-                hit: true, 
-                decay: false, 
-                timer: 0,
-                ruleValue: 2,
-                hasHeart: false
-            }];
-            gameItems = []; 
-            worldParticles = [];
-            
-            for(let i=1; i<15; i++) spawnPlatform(height-100 - i*150);
+        // --- HOISTED HELPER DECORATION HANDLERS ---
+        window.addFloatingText = function(x, y, text, color) {
+            floatingTexts.push({ x, y, text, color, opacity: 1.0, vy: -1.5, scale: 1.0 });
         };
 
-        // --- GENERATE IN-FLIGHT BLITZ GATES ---
-        function generateInFlightBlitzGate() {
-            const challenge = generateAcademyQuestion();
-            activeGateQuestion = {
-                y: nextGateY,
-                text: challenge.text,
-                correct: challenge.correct,
-                wrong: challenge.choices.find(c => c !== challenge.correct),
-                correctSide: Math.random() > 0.5 ? 'left' : 'right',
-                passed: false
-            };
-            nextGateY -= 900; 
-        }
-
-        // --- GENERATE RANDOM FACTOR STORM CHALLENGES ---
-        function generateClimbRule() {
-            currentRuleType = 'factor';
-            
-            const targets = [12, 16, 20, 24, 30, 36, 40];
-            ruleTargetValue = targets[Math.floor(Math.random() * targets.length)];
-            ruleTargetText = `Factors of ${ruleTargetValue}`;
-            
-            addFloatingText(width/2, height/2 - 100, `TARGET UPDATE: ${ruleTargetText}!`, '#06b6d4');
-        }
-
-        // --- CHECKS IF VALUE MATCHES ACTIVE LOGIC RULE ---
-        function matchesClimbRule(val) {
-            if (currentRuleType === 'factor') {
-                return ruleTargetValue % val === 0;
-            }
-            return true;
-        }
-
-        function spawnPlatform(y) {
-            const currentHeight = Math.max(0, Math.floor(-y/10));
-            platformCountForHeart++;
-            
-            let shrinkFactor = 1;
-            if (currentHeight > 200) shrinkFactor = 0.9;
-            if (currentHeight > 500) shrinkFactor = 0.8;
-            if (currentHeight > 1000) shrinkFactor = 0.7;
-            if (currentHeight > 1500) shrinkFactor = 0.6;
-            
-            let baseWidth = inventory.platform_size ? 180 : 130;
-            const w = Math.max(45, baseWidth * shrinkFactor);
-            const px = Math.random()*(width-w);
-            
-            let color = rainbowColors[Math.floor(Math.random() * rainbowColors.length)];
-            let decay = false;
-            
-            if (currentHeight > 600 && Math.random() < 0.35 && activeGamemode !== 'rule') {
-                color = '#ef4444'; 
-                decay = true;
-            }
-
-            // Assign numerical rules values for climbing puzzle
-            let ruleValue = Math.floor(Math.random() * 45) + 1;
-            
-            // Progression overhauling with fun meme easter egg triggers!
-            if (activeGamemode === 'rule') {
-                const rProb = Math.random();
-                if (rProb < 0.05) {
-                    const memes = [21, 25, 67, 42, 100, 360, 9];
-                    ruleValue = memes[Math.floor(Math.random() * memes.length)];
-                    color = '#f59e0b'; // Gold color to indicate special meme number!
-                } else if (rProb > 0.45) {
-                    // Inject real factor of current target 70% of the time so it remains playable
-                    const possibleFactors = [];
-                    for (let f = 1; f <= ruleTargetValue; f++) {
-                        if (ruleTargetValue % f === 0) possibleFactors.push(f);
-                    }
-                    if (possibleFactors.length > 0) {
-                        ruleValue = possibleFactors[Math.floor(Math.random() * possibleFactors.length)];
-                    }
-                }
-            }
-
-            // --- 💖 LIL HEART SPAWNER ENGINE (10% chance every 30 platforms) ---
-            let hasHeart = false;
-            if (platformCountForHeart >= 30) {
-                platformCountForHeart = 0; // Reset countdown
-                if (Math.random() < 0.10) {
-                    hasHeart = true;
-                    color = '#f43f5e'; // Highlight platform in glowing pink
-                }
-            }
-
-            platforms.push({ x: px, y: y, w: w, color, hit: false, decay: decay, timer: 0, ruleValue: ruleValue, hasHeart: hasHeart });
-            
-            const shardChance = currentHeight > 1200 ? 0.15 : 0.25;
-            if(Math.random() < shardChance && !hasHeart) {
-                const centerOffset = 10 + Math.random() * (w - 20);
-                
-                if (Math.random() < 0.02) {
-                    gameItems.push({ 
-                        type: 'pi-shard',
-                        x: px + centerOffset, 
-                        y: y-35, 
-                        r: 14, 
-                        collected: false, 
-                        phase: Math.random()*10 
-                    });
-                } else {
-                    gameItems.push({ 
-                        type: 'normal',
-                        x: px + centerOffset, 
-                        y: y-35, 
-                        r: 11, 
-                        collected: false, 
-                        phase: Math.random()*10 
-                    });
-                }
-            }
-        }
-
-        function createBurst(x, y, color) {
+        window.createBurst = function(x, y, color) {
             const operators = ['+', '-', '×', '÷', '=', '≈', 'π', 'θ'];
             for(let i=0; i<16; i++) {
                 worldParticles.push({
@@ -1188,351 +643,852 @@
                     rotSpeed: (Math.random() - 0.5) * 0.15
                 });
             }
+        };
+
+        // --- INPUT HANDLE METHOD ---
+        function handleInput(clientX) {
+            initAudio();
+            if(!gameActive || mathActive) return;
+            if(player.vy > 0.5 && window.inventory.double_jump > 0) {
+                player.vy = -14; 
+                window.inventory.double_jump--;
+                localStorage.setItem('gj_inv_v6', JSON.stringify(window.inventory));
+                renderShops();
+                playSound('bounce');
+                createBurst(player.x, player.y, '#fff');
+                addFloatingText(player.x, player.y - 20, "DOUBLE LEAP!", '#38bdf8');
+            }
+            targetX = clientX;
         }
 
-        // --- 💖 EXPLODING FIREWORK SIMULATOR (VALGO SUCKS DESIGNATION) ---
-        function triggerValgoSucksFireworks(targetX, targetY) {
-            isWarping = true;
-            gameActive = false;
-            cutsceneCanvas.style.display = 'block';
-            hud.classList.add('hidden');
+        // --- MUTE CONTROLLER SYSTEM ---
+        window.toggleMute = function() {
+            window.isMuted = !window.isMuted;
+            localStorage.setItem('gj_muted', window.isMuted);
 
-            let start = Date.now();
-            let duration = 2800; // Expanded to display spectacular message
+            const btns = document.querySelectorAll('.btn-mute-toggle');
+            btns.forEach(btn => {
+                btn.innerHTML = window.isMuted ? '🔇 Muted' : '🔊 Sound On';
+            });
 
-            let particles = [];
-            // Create hundreds of glowing coordinate starbursts
-            for (let f = 0; f < 5; f++) {
-                const fx = (Math.random() * 0.6 + 0.2) * width;
-                const fy = (Math.random() * 0.4 + 0.2) * height;
-                const colors = ['#f43f5e', '#38bdf8', '#eab308', '#ec4899', '#10b981', '#a855f7'];
-                const burstColor = colors[f % colors.length];
-
-                for (let i = 0; i < 45; i++) {
-                    const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 8 + 3;
-                    particles.push({
-                        x: fx, y: fy,
-                        vx: Math.cos(angle) * speed,
-                        vy: Math.sin(angle) * speed,
-                        life: 1.0,
-                        decay: Math.random() * 0.015 + 0.01,
-                        color: burstColor
-                    });
+            if (window.isMuted) {
+                if (ambientGain) {
+                    ambientGain.gain.setValueAtTime(0, audioCtx ? audioCtx.currentTime : 0);
                 }
+            } else {
+                if (!audioCtx) {
+                    initAudio();
+                } else {
+                    audioCtx.resume();
+                    if (!ambientOsc) {
+                        startAmbientMusic();
+                    } else if (ambientGain) {
+                        ambientGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                    }
+                }
+                playSound('bounce');
+            }
+        };
+
+        // --- GLOBALIZED RESIZE ACTION ---
+        window.resizeGameCanvas = function() {
+            if (!window.canvas) return;
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            cutsceneCanvas.width = width;
+            cutsceneCanvas.height = height;
+        };
+
+        window.initParallaxBackground = function() {
+            parallaxStars = [];
+            for (let i = 0; i < 120; i++) {
+                parallaxStars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    size: Math.random() * 2 + 0.5,
+                    speed: Math.random() * 0.4 + 0.1,
+                    color: Math.random() > 0.6 ? 'rgba(34, 211, 238, 0.4)' : 'rgba(255, 255, 255, 0.3)',
+                    mathGlyph: Math.random() > 0.85 ? ['+', '-', '=', 'x', '÷', 'π', 'θ'][Math.floor(Math.random() * 7)] : null
+                });
+            }
+        };
+
+        // --- GLOBALIZED WARP HANDLERS ---
+        window.triggerCosmicWarp = function() {
+            initAudio();
+            if(isWarping) return;
+            playSound('boost');
+            isWarping = true;
+            
+            // Draw overlay system
+            cutsceneCanvas.style.display = 'block';
+            homeScreen.classList.add('hidden-screen');
+
+            let stars = [];
+            for (let i = 0; i < 300; i++) {
+                stars.push({
+                    x: (Math.random() - 0.5) * width * 3,
+                    y: (Math.random() - 0.5) * height * 3,
+                    z: Math.random() * width,
+                    color: Math.random() > 0.5 ? '#d946ef' : '#06b6d4'
+                });
             }
 
-            function fireworkFrame() {
+            let start = Date.now();
+            function warpFrame() {
                 let elapsed = Date.now() - start;
-                let progress = Math.min(elapsed / duration, 1);
-
-                cCtx.fillStyle = 'rgba(2, 4, 18, 0.18)';
+                let progress = Math.min(elapsed / 1500, 1);
+                
+                cCtx.fillStyle = 'rgba(2, 4, 15, 0.15)';
                 cCtx.fillRect(0, 0, width, height);
 
-                // Update & draw sparks
-                particles.forEach(p => {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy += 0.08; // Gravity drift
-                    p.life -= p.decay;
+                cCtx.save();
+                cCtx.translate(width / 2, height / 2);
+                cCtx.rotate(progress * Math.PI * 2);
 
-                    cCtx.globalAlpha = Math.max(0, p.life);
-                    cCtx.fillStyle = p.color;
+                stars.forEach(s => {
+                    s.z -= 15 * progress;
+                    if (s.z <= 0) s.z = width;
+
+                    let sx = (s.x / s.z) * width;
+                    let sy = (s.y / s.z) * height;
+                    let size = (1 - s.z / width) * 5;
+
+                    cCtx.globalAlpha = (1 - s.z / width);
+                    cCtx.fillStyle = s.color;
                     cCtx.beginPath();
-                    cCtx.arc(p.x, p.y, Math.max(1, p.life * 4), 0, Math.PI * 2);
+                    cCtx.arc(sx, sy, size, 0, Math.PI * 2);
                     cCtx.fill();
                 });
+                cCtx.restore();
                 cCtx.globalAlpha = 1.0;
 
-                // Cinematic Text Reveal
-                if (progress > 0.15) {
-                    cCtx.save();
-                    cCtx.translate(width / 2, height / 2);
-                    
-                    // Giant pulsating neon font
-                    const pulse = 1.0 + Math.sin(progress * Math.PI * 2.5) * 0.06;
-                    cCtx.scale(pulse, pulse);
-
-                    cCtx.shadowBlur = 40;
-                    cCtx.shadowColor = '#f43f5e';
-                    cCtx.fillStyle = '#ffffff';
-                    cCtx.font = '900 48px Outfit';
-                    cCtx.textAlign = 'center';
-                    cCtx.textBaseline = 'middle';
-                    cCtx.fillText("VALGO SUCKS!", 0, -10);
-
-                    cCtx.shadowBlur = 15;
-                    cCtx.fillStyle = '#f472b6';
-                    cCtx.font = '900 16px Outfit';
-                    cCtx.fillText("2.5X DOUBLE MULTIPLIER UNLOCKED!", 0, 40);
-                    cCtx.restore();
-                }
-
-                if (elapsed < duration) {
-                    requestAnimationFrame(fireworkFrame);
+                if (elapsed < 1500) {
+                    requestAnimationFrame(warpFrame);
                 } else {
                     isWarping = false;
                     cutsceneCanvas.style.display = 'none';
-                    
-                    // Resume Game flight with multiplier active
-                    gameActive = true;
-                    hud.classList.remove('hidden');
-                    canvas.style.pointerEvents = 'auto';
-
-                    // Trigger 2.5x Overdrive overlay
-                    heartMultiplierActive = true;
-                    heartMultiplierTimerTicks = 1500; // 25 seconds at 60 FPS
-                    
-                    const multBadge = document.getElementById('heart-mult-badge');
-                    if (multBadge) multBadge.classList.remove('hidden');
-
-                    player.vy = -16; // soft launch back into play
-                    createBurst(player.x, player.y, '#f43f5e');
-                    triggerScreenShockwave(player.x, player.y, '#f43f5e');
-                    addFloatingText(player.x, player.y - 30, "2.5X SPEED MULTIPLIER ONLINE!", '#ec4899');
-                    screenShake = 10;
+                    cosmicScreen.classList.remove('hidden-screen');
                 }
             }
-            fireworkFrame();
-        }
+            warpFrame();
+        };
 
-        function triggerScreenShockwave(x, y, color) {
-            shockwaves.push({ x, y, r: 10, maxRadius: 180, opacity: 1, color });
-        }
+        window.reverseWarp = function() {
+            if (!initialized) return;
+            initAudio();
+            playSound('bounce');
+            cosmicScreen.className = 'screen hidden-screen';
+            homeScreen.className = 'screen';
+        };
 
-        function addFloatingText(x, y, text, color) {
-            floatingTexts.push({ x, y, text, color, opacity: 1.0, vy: -1.5, scale: 1.0 });
-        }
-
-        function flashFact() {
-            const index = Math.floor(Math.random() * cosmicFacts.length);
-            const box = document.getElementById('fact-notification');
-            const text = document.getElementById('fact-text');
+        window.startMathleticsSession = function() {
+            initAudio();
+            playSound('bounce');
             
-            if (box && text) {
-                text.innerText = cosmicFacts[index];
-                box.style.opacity = '1';
-                box.style.transform = 'translate(-50%, 0) scale(1.05)';
-                
+            // ALWAYS hide home screen on session startup
+            homeScreen.classList.add('hidden-screen');
+
+            if (activeGamemode !== 'classic') {
+                calculatedThrustFuel = activeGamemode === 'blitz' ? 70 : 100;
+                launchPlayerDirectly();
+                return;
+            }
+            currentMathSessionIndex = 1;
+            mathStreak = 0;
+            calculatedThrustFuel = 0;
+            mathScreen.classList.remove('hidden-screen');
+            generateSessionQuestion();
+        };
+
+        window.submitMatheticAnswer = function(chosen, correct) {
+            initAudio();
+            if (chosen === correct) {
+                mathStreak++;
+                playSound('pi');
+                calculatedThrustFuel += Math.round(15 * (1 + (mathStreak * 0.2)));
+                addFloatingText(width/2, height/2, `CORRECT! STREAK x${mathStreak}`, '#10b981');
+            } else {
+                mathStreak = 0;
+                playSound('shatter');
+                calculatedThrustFuel += 5;
+                addFloatingText(width/2, height/2, "INCORRECT (+5L)", '#ef4444');
+            }
+
+            document.getElementById('projected-fuel').innerText = `${calculatedThrustFuel} Litres`;
+            document.getElementById('math-streak-val').innerText = `x${(1 + (mathStreak * 0.2)).toFixed(1)}`;
+
+            currentMathSessionIndex++;
+            if (currentMathSessionIndex <= totalSessionQuestions) {
+                setTimeout(generateSessionQuestion, 600);
+            } else {
                 setTimeout(() => {
-                    box.style.opacity = '0';
-                    box.style.transform = 'translate(-50%, 0) scale(0.95)';
-                }, 4000);
+                    mathScreen.classList.add('hidden-screen');
+                    launchPlayerDirectly();
+                }, 800);
             }
-        }
+        };
 
-        function activateFeverMode() {
-            feverMode = true;
-            feverTimer = 240; 
-            crystalCombo = 0;
-            triggerScreenShockwave(player.x, player.y, '#f472b6');
-            addFloatingText(player.x, player.y - 40, "FEVER MODE ACTIVE!", '#f472b6');
-            screenShake = 25;
-            player.vy = -34; 
-        }
-
-        function triggerFlightTermination() {
-            canvas.style.pointerEvents = 'none';
-            gameActive = false;
-            feverMode = false;
-            activeHeartBoost = false;
-            heartMultiplierActive = false;
-
-            const multBadge = document.getElementById('heart-mult-badge');
-            if (multBadge) multBadge.classList.add('hidden');
+        window.selectGamemode = function(mode) {
+            initAudio();
+            playSound('bounce');
+            activeGamemode = mode;
+            document.getElementById('btn-mode-classic').classList.remove('active');
+            document.getElementById('btn-mode-blitz').classList.remove('active');
+            document.getElementById('btn-mode-rule').classList.remove('active');
             
-            const reachedAlt = Math.max(0, Math.floor(-cameraY/10));
-            if (reachedAlt > bestAltitude) {
-                bestAltitude = reachedAlt;
-                localStorage.setItem('gj_best_alt_v6', bestAltitude);
-                addFloatingText(width / 2, height / 2, "NEW PERSONAL RECORD! 🏆", '#34d399');
+            const selectedButton = document.getElementById('btn-mode-' + mode);
+            if (selectedButton) selectedButton.classList.add('active');
+            
+            const actionButton = document.getElementById('btn-start-launch');
+            if (actionButton) {
+                actionButton.innerText = (mode === 'classic') ? "START MATH TRIAL" : "LAUNCH INSTANTLY";
             }
+        };
 
-            sparksBalance += sessionSparks;
-            shardsBalance += sessionShards;
-            localStorage.setItem('gj_sparks_v6', sparksBalance);
-            localStorage.setItem('gj_shards_v6', shardsBalance);
-            localStorage.setItem('gj_pi_shards_v6', piShards);
-            
-            hud.classList.add('hidden');
-            homeScreen.classList.remove('hidden-screen');
+        window.selectSkin = function(skinId) {
+            initAudio();
+            playSound('crystal');
+            window.selectedSkin = skinId;
+            localStorage.setItem('gj_selected_skin_v6', window.selectedSkin);
             renderSkinsSelector();
             updateCurrencyUI();
+        };
+
+        window.buySkin = function(skinId, cost, currency) {
+            initAudio();
+            if (currency === 'sparks' && window.sparksBalance >= cost) {
+                window.sparksBalance -= cost;
+                window.unlockedSkins.push(skinId);
+                playSound('pi');
+            } else if (currency === 'shards' && window.shardsBalance >= cost) {
+                window.shardsBalance -= cost;
+                window.unlockedSkins.push(skinId);
+                playSound('pi');
+            } else {
+                playSound('shatter');
+                addFloatingText(width/2, height/2, "NOT ENOUGH RESOURCES!", '#ef4444');
+                return;
+            }
+            
+            localStorage.setItem('gj_sparks_v6', window.sparksBalance);
+            localStorage.setItem('gj_shards_v6', window.shardsBalance);
+            localStorage.setItem('gj_unlocked_skins_v6', JSON.stringify(window.unlockedSkins));
+            renderSkinsSelector();
+            updateCurrencyUI();
+            addFloatingText(width/2, height/2, "SKIN UNLOCKED!", '#10b981');
+        };
+
+        window.craftPiSkin = function() {
+            initAudio();
+            if (window.piShards >= 4) {
+                window.piShards -= 4;
+                window.unlockedSkins.push('pi_skin');
+                localStorage.setItem('gj_pi_shards_v6', window.piShards);
+                localStorage.setItem('gj_unlocked_skins_v6', JSON.stringify(window.unlockedSkins));
+                playSound('pi');
+                renderSkinsSelector();
+                updateCurrencyUI();
+                addFloatingText(width/2, height/2, "3.14159 SKIN UNLOCKED! 🔮", '#10b981');
+            } else {
+                playSound('shatter');
+                addFloatingText(width/2, height/2, "NEED 4 PI SHARDS!", '#ef4444');
+            }
+        };
+
+        // --- SKINS INVENTORY COMPILER ---
+        function renderSkinsSelector() {
+            const container = document.getElementById('skin-container');
+            if(!container) return;
+            
+            const combinedDatabase = [...skinsDatabase, ...gangSkinsDatabase];
+            container.innerHTML = combinedDatabase.map(skin => {
+                const isGang = skin.elite;
+                const isUnlocked = !isGang ? window.unlockedSkins.includes(skin.id) : window.unlockedGangSkins.includes(skin.id);
+                const isSelected = window.selectedSkin === skin.id;
+                
+                let actionBtnHTML = '';
+                if (isSelected) {
+                    actionBtnHTML = `<span class="text-[8px] bg-emerald-500/20 text-emerald-400 font-black px-1.5 py-0.5 rounded border border-emerald-500/30">Active</span>`;
+                } else if (isUnlocked) {
+                    actionBtnHTML = `<button onclick="window.selectSkin('${skin.id}')" class="text-[8px] bg-white/10 text-white font-black px-1.5 py-0.5 rounded hover:bg-white/25">Use</button>`;
+                } else {
+                    if (isGang) {
+                        actionBtnHTML = `<span class="text-[8px] text-cyan-300 font-bold">Locked</span>`;
+                    } else if (skin.isPiCraft) {
+                        actionBtnHTML = `<button onclick="window.craftPiSkin()" class="text-[8px] bg-emerald-500 text-black font-black px-1.5 py-0.5 rounded">Craft (4π)</button>`;
+                    } else if (skin.costSparks > 0) {
+                        actionBtnHTML = `<button onclick="window.buySkin('${skin.id}', ${skin.costSparks}, 'sparks')" class="text-[8px] bg-yellow-400 text-black font-black px-1.5 py-0.5 rounded">${skin.costSparks}✨</button>`;
+                    } else if (skin.costShards > 0) {
+                        actionBtnHTML = `<button onclick="window.buySkin('${skin.id}', ${skin.costShards}, 'shards')" class="text-[8px] bg-fuchsia-500 text-white font-black px-1.5 py-0.5 rounded">${skin.costShards}💎</button>`;
+                    }
+                }
+
+                return `
+                    <div class="flex-shrink-0 flex items-center justify-between gap-2.5 p-1.5 px-2.5 bg-white/5 border border-white/10 rounded-xl">
+                        <div class="text-left">
+                            <span class="text-[10px] font-black tracking-tight text-white block">${skin.name}</span>
+                            ${isGang ? `<span class="text-[7px] text-cyan-400 block uppercase font-bold">GANG CLASS</span>` : ''}
+                        </div>
+                        ${actionBtnHTML}
+                    </div>
+                `;
+            }).join('');
         }
 
-        // --- 🎬 MULTI-STAGE EASTER EGG MEME CUTSCENE TRIGGER ---
-        function triggerMemeCutscene(memeId) {
+        // --- RENDER SHOPS COMPILER ---
+        function renderShops() {
+            const renderSet = (list, containerId, currency) => {
+                const cont = document.getElementById(containerId);
+                if(!cont) return;
+                cont.innerHTML = list.map(item => {
+                    const owned = !item.consumable && window.inventory[item.id];
+                    const count = item.consumable ? ` (${window.inventory[item.id] || 0})` : "";
+                    return `
+                        <div class="shop-item text-xs">
+                            <div class="text-left pr-4">
+                                <p class="font-bold text-white text-left leading-snug">${item.name}${count}</p>
+                                <p class="text-[8px] text-white/40 text-left leading-tight">${item.desc}</p>
+                            </div>
+                            <button onclick="window.buyItem('${item.id}', ${item.price}, '${currency}')" 
+                                class="bg-white/10 px-2.5 py-1.5 rounded-xl text-[9px] font-black hover:bg-white/20 transition-all text-white border border-white/5 cursor-pointer flex-shrink-0">
+                                ${owned ? 'OWNED' : item.price + (currency === 'sparks' ? '✨' : '💎')}
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            };
+            renderSet(sparkItems, 'spark-shop', 'sparks');
+            
+            const shardCont = document.getElementById('shard-shop');
+            if (shardCont) {
+                shardCont.innerHTML = shardItems.map(item => {
+                    const owned = !item.consumable && window.inventory[item.id];
+                    const count = item.consumable ? ` (${window.inventory[item.id] || 0})` : "";
+                    return `
+                        <div class="shop-item text-xs">
+                            <div class="text-left pr-4">
+                                <p class="font-bold text-white leading-snug">${item.name}${count}</p>
+                                <p class="text-[8px] text-white/40 leading-tight">${item.desc}</p>
+                            </div>
+                            <button onclick="window.buyItem('${item.id}', ${item.price}, 'shards')" 
+                                class="bg-white/10 px-2.5 py-1.5 rounded-xl text-[9px] font-black hover:bg-white/20 transition-all text-white border border-white/5 cursor-pointer flex-shrink-0">
+                                ${owned ? 'OWNED' : item.price + '💎'}
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        window.buyItem = function(id, price, currency) {
+            initAudio();
+            const item = [...sparkItems, ...shardItems].find(i => i.id === id);
+            if (!item.consumable && window.inventory[id]) return;
+
+            if (currency === 'sparks' && window.sparksBalance >= price) {
+                window.sparksBalance -= price;
+                if (item.consumable) window.inventory[id] = (window.inventory[id] || 0) + 1;
+                else window.inventory[id] = true;
+                playSound('pi');
+            } else if (currency === 'shards' && window.shardsBalance >= price) {
+                window.shardsBalance -= price;
+                if (item.consumable) window.inventory[id] = (window.inventory[id] || 0) + 1;
+                else window.inventory[id] = true;
+                playSound('pi');
+            } else {
+                playSound('shatter');
+                return;
+            }
+
+            localStorage.setItem('gj_sparks_v6', window.sparksBalance);
+            localStorage.setItem('gj_shards_v6', window.shardsBalance);
+            localStorage.setItem('gj_inv_v6', JSON.stringify(window.inventory));
+            renderShops();
+            updateCurrencyUI();
+        };
+
+        window.decodeConceptNotebook = function() {
+            initAudio();
+            if (window.gangConceptsCount >= 3) {
+                const unowned = gangSkinsDatabase.filter(gs => !window.unlockedGangSkins.includes(gs.id));
+                if (unowned.length > 0) {
+                    window.gangConceptsCount -= 3;
+                    const awardedSkin = unowned[Math.floor(Math.random() * unowned.length)];
+                    window.unlockedGangSkins.push(awardedSkin.id);
+                    
+                    localStorage.setItem('gj_gang_concepts_v6', window.gangConceptsCount);
+                    localStorage.setItem('gj_unlocked_gang_skins_v6', JSON.stringify(window.unlockedGangSkins));
+                    
+                    playSound('pi');
+                    renderSkinsSelector();
+                    updateCurrencyUI();
+                    addFloatingText(width/2, height/2, `UNLOCKED GANG AVATAR: ${awardedSkin.name}!`, '#22d3ee');
+                } else {
+                    playSound('shatter');
+                    addFloatingText(width/2, height/2, "YOU ALREADY OWN EVERY GANG MEMBER!", '#fb7185');
+                }
+            } else {
+                playSound('shatter');
+                addFloatingText(width/2, height/2, "NEED 3 CONCEPT BLUEPRINTS! 📘", '#ef4444');
+            }
+        };
+
+        window.clickLabHeader = function() {
+            let now = Date.now();
+            initAudio();
+            playSound('bounce');
+            if (now - lastLabClickTimestamp < 600) {
+                rapidLabClicks++;
+                if (rapidLabClicks >= 4) { 
+                    document.getElementById('admin-panel').classList.remove('hidden');
+                    playSound('boost');
+                    addFloatingText(width/2, height/2, "⚠️ SYSTEM BYPASS ACTIVE", '#ef4444');
+                    rapidLabClicks = 0;
+                }
+            } else {
+                rapidLabClicks = 1;
+            }
+            lastLabClickTimestamp = now;
+        };
+
+        window.adminCheat = function(type) {
+            initAudio();
+            playSound('pi');
+            if (type === 'sparks') {
+                window.sparksBalance += 1000;
+            } else if (type === 'crystals') {
+                window.shardsBalance += 10;
+            } else if (type === 'pi') {
+                window.piShards = Math.min(4, window.piShards + 1);
+            } else if (type === 'concepts') {
+                window.gangConceptsCount += 5;
+            } else if (type === 'reset') {
+                window.sparksBalance = 0;
+                window.shardsBalance = 0;
+                window.piShards = 0;
+                window.bestAltitude = 0;
+                window.selectedSkin = 'standard';
+                window.unlockedSkins = ['standard'];
+                window.inventory = {
+                    double_jump: 0, safety_net: 0, chronos_lens: 0, jump_height: false,
+                    platform_size: false, trail_rainbow: false, magnet: false, spark_multiplier: false,
+                    gravity_bubble: 0, cosmic_magnet: false, shard_multiplier: false, phoenix: 0
+                };
+                localStorage.clear();
+            }
+            localStorage.setItem('gj_sparks_v6', window.sparksBalance);
+            localStorage.setItem('gj_shards_v6', window.shardsBalance);
+            localStorage.setItem('gj_pi_shards_v6', window.piShards);
+            localStorage.setItem('gj_best_alt_v6', window.bestAltitude);
+            localStorage.setItem('gj_gang_concepts_v6', window.gangConceptsCount);
+            localStorage.setItem('gj_unlocked_skins_v6', JSON.stringify(window.unlockedSkins));
+            localStorage.setItem('gj_selected_skin_v6', window.selectedSkin);
+            localStorage.setItem('gj_inv_v6', JSON.stringify(window.inventory));
+            
+            renderSkinsSelector();
+            renderShops();
+            updateCurrencyUI();
+            addFloatingText(width/2, height/2, "SYSTEM PARAMETERS UPDATED!", '#ef4444');
+        }
+
+        // --- GANG SPECIFIC FEEBLES & EMPOWERMENTS SPECIFICATION ---
+        function getFeverMaxCrystals() { return window.selectedSkin === 'sophie' ? 2 : 3; }
+        function getFeverDuration() { return (window.selectedSkin === 'sophie' || window.selectedSkin === 'curtis') ? 360 : 240; }
+        function getPlayerBaseJumpPower() {
+            if (window.selectedSkin === 'yoon_ah') return -24; 
+            if (window.selectedSkin === 'hubert' || window.selectedSkin === 'curtis') return -17; 
+            return window.inventory.jump_height ? -23 : -20; 
+        }
+        function getNotebookSpawnRate() { return 0.06; }
+        function getCrystalSpawnRate() { return window.selectedSkin === 'hubert' ? 0.45 : 0.25; }
+        function getValgoHeartSpawnRate() { return window.selectedSkin === 'curtis' ? 0.15 : 0.10; }
+
+        function updateConceptsUI() {
+            const conceptDisplay = document.getElementById('total-concepts');
+            if (conceptDisplay) {
+                conceptDisplay.innerText = `${window.gangConceptsCount}📘`;
+            }
+        }
+
+        // --- 💀 DRAMATIC EMERGENCY DEATH CUTSCENE OVERHAUL ---
+        function triggerDeathDiagnosticCutscene(reason, callback) {
             isWarping = true;
             gameActive = false;
             cutsceneCanvas.style.display = 'block';
             hud.classList.add('hidden');
             
-            let start = Date.now();
-            let duration = 2400;
-            let starGrid = [];
-            for (let i = 0; i < 150; i++) {
-                starGrid.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    r: Math.random() * 3 + 1,
-                    color: rainbowColors[Math.floor(Math.random() * rainbowColors.length)]
-                });
-            }
+            playSound('shatter');
+            setTimeout(() => playSound('shatter'), 150);
+            setTimeout(() => playSound('shatter'), 300);
 
-            function frame() {
+            let start = Date.now();
+            let duration = 2000; 
+
+            function cutsceneFrame() {
                 let elapsed = Date.now() - start;
                 let progress = Math.min(elapsed / duration, 1);
 
-                // Wholesome Cosmic Background Coloring depending on Meme ID
-                if (memeId === 21) cCtx.fillStyle = 'rgba(15, 23, 42, 0.3)'; // Glitchy midnight blue
-                else if (memeId === 25) cCtx.fillStyle = 'rgba(12, 74, 96, 0.3)'; // Starfish coral turquoise
-                else if (memeId === 67) cCtx.fillStyle = 'rgba(88, 28, 135, 0.3)'; // Cyber neon magenta
-                else if (memeId === 42) cCtx.fillStyle = 'rgba(2, 6, 23, 0.3)'; // Deep universe nebula
-                else if (memeId === 100) cCtx.fillStyle = 'rgba(127, 29, 29, 0.3)'; // High Alert red pulse
-                else if (memeId === 360) cCtx.fillStyle = 'rgba(6, 78, 59, 0.3)'; // Radar scan forest green
-                else if (memeId === 9) cCtx.fillStyle = 'rgba(74, 4, 78, 0.3)'; // Whimsical cat purple
-                else cCtx.fillStyle = 'rgba(20, 83, 45, 0.3)'; // Retro hacker green
-
+                cCtx.fillStyle = 'rgba(8, 2, 4, 0.28)';
                 cCtx.fillRect(0, 0, width, height);
 
-                // Space Star dust
-                starGrid.forEach(s => {
-                    cCtx.fillStyle = s.color;
+                cCtx.strokeStyle = 'rgba(239, 68, 68, 0.1)';
+                cCtx.lineWidth = 1.5;
+                for(let i=0; i<width; i+=40) {
                     cCtx.beginPath();
-                    cCtx.arc(s.x, s.y + progress * 70, s.r, 0, Math.PI*2);
-                    cCtx.fill();
-                });
+                    let warpOffset = Math.sin(progress * 15 + i) * 15 * (1 - progress);
+                    cCtx.moveTo(i + warpOffset, 0);
+                    cCtx.lineTo(i - warpOffset, height);
+                    cCtx.stroke();
+                }
+
+                let scanY = (elapsed * 2.2) % height;
+                cCtx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
+                cCtx.lineWidth = 4;
+                cCtx.shadowBlur = 20;
+                cCtx.shadowColor = '#ef4444';
+                cCtx.beginPath();
+                cCtx.moveTo(0, scanY);
+                cCtx.lineTo(width, scanY);
+                cCtx.stroke();
+                cCtx.shadowBlur = 0;
 
                 cCtx.save();
-                cCtx.translate(width/2, height/2);
+                cCtx.translate(width / 2, height / 2);
                 
-                let scale = Math.sin(progress * Math.PI) * 1.5;
-                cCtx.scale(scale, scale);
-                
-                if (memeId === 360 || memeId === 9) {
-                    cCtx.rotate(progress * Math.PI * 4); // Fast spins
-                }
+                let textShake = (Math.random() - 0.5) * 8 * (1 - progress);
+                cCtx.translate(textShake, textShake);
 
                 cCtx.shadowBlur = 30;
-                cCtx.shadowColor = '#06b6d4';
+                cCtx.shadowColor = '#ef4444';
+                cCtx.fillStyle = '#f87171';
+                cCtx.font = '900 36px Outfit';
                 cCtx.textAlign = 'center';
                 cCtx.textBaseline = 'middle';
+                cCtx.fillText("CRITICAL FAILURE", 0, -40);
 
-                if (memeId === 21) {
-                    cCtx.fillStyle = '#ef4444';
-                    cCtx.font = '900 36px Outfit';
-                    cCtx.fillText("9 + 10 =", 0, -35);
-                    cCtx.fillStyle = '#10b981';
-                    cCtx.font = '900 64px Outfit';
-                    cCtx.fillText("21!", 0, 20);
-                } 
-                else if (memeId === 25) {
-                    cCtx.fillStyle = '#f472b6';
-                    cCtx.font = '900 24px Outfit';
-                    cCtx.fillText("What's funnier than 24?", 0, -30);
-                    cCtx.fillStyle = '#38bdf8';
-                    cCtx.font = '900 64px Outfit';
-                    cCtx.fillText("25! 🌟", 0, 20);
-                }
-                else if (memeId === 67) {
-                    cCtx.fillStyle = '#ca8a04';
-                    cCtx.font = '900 52px Outfit';
-                    cCtx.fillText("67", 0, -20);
-                    cCtx.fillStyle = '#ffffff';
-                    cCtx.font = '900 24px Outfit';
-                    cCtx.fillText("PRIME GLITCH ANOMALY!", 0, 25);
-                }
-                else if (memeId === 42) {
-                    cCtx.fillStyle = '#a855f7';
-                    cCtx.font = '900 20px Outfit';
-                    cCtx.fillText("The Answer to the Universe...", 0, -30);
-                    cCtx.fillStyle = '#ffffff';
-                    cCtx.font = '900 72px Outfit';
-                    cCtx.fillText("42 🌌", 0, 20);
-                }
-                else if (memeId === 100) {
-                    cCtx.fillStyle = '#f87171';
-                    cCtx.font = '900 32px Outfit';
-                    cCtx.fillText("77 + 33 =", 0, -35);
-                    cCtx.fillStyle = '#ffffff';
-                    cCtx.font = '900 64px Outfit';
-                    cCtx.fillText("100? No! 🚨", 0, 25);
-                }
-                else if (memeId === 360) {
-                    cCtx.fillStyle = '#34d399';
-                    cCtx.font = '900 48px Outfit';
-                    cCtx.fillText("360 NO-SCOPE!", 0, 0);
-                }
-                else if (memeId === 9) { // --- MAXWELL CAT OVERHAUL CHRONICLES ---
-                    cCtx.strokeStyle = '#ffffff';
-                    cCtx.fillStyle = '#94a3b8';
-                    cCtx.lineWidth = 4;
-                    cCtx.beginPath();
-                    cCtx.arc(0, 0, 45, 0, Math.PI*2);
-                    ctx.shadowBlur = 20;
-                    ctx.shadowColor = '#d946ef';
-                    cCtx.fill();
-                    cCtx.stroke();
-                    
-                    // Ears
-                    cCtx.fillStyle = '#64748b';
-                    cCtx.beginPath();
-                    cCtx.moveTo(-30, -30); cCtx.lineTo(-10, -50); cCtx.lineTo(-5, -25);
-                    cCtx.closePath(); cCtx.fill(); cCtx.stroke();
-                    cCtx.beginPath();
-                    cCtx.moveTo(30, -30); cCtx.lineTo(10, -50); cCtx.lineTo(5, -25);
-                    cCtx.closePath(); cCtx.fill(); cCtx.stroke();
-                    
-                    // Eyes and Whiskers
-                    cCtx.fillStyle = '#000';
-                    cCtx.beginPath(); cCtx.arc(-15, -10, 4, 0, Math.PI*2); cCtx.fill();
-                    cCtx.beginPath(); cCtx.arc(15, -10, 4, 0, Math.PI*2); cCtx.fill();
-                    
-                    cCtx.strokeStyle = '#fff';
-                    cCtx.lineWidth = 2;
-                    cCtx.beginPath(); cCtx.moveTo(-25, 0); cCtx.lineTo(-50, -5); cCtx.moveTo(-25, 10); cCtx.lineTo(-52, 12);
-                    cCtx.moveTo(25, 0); cCtx.lineTo(50, -5); cCtx.moveTo(25, 10); cCtx.lineTo(52, 12);
-                    cCtx.stroke();
+                cCtx.shadowBlur = 10;
+                cCtx.fillStyle = '#ffffff';
+                cCtx.font = '700 16px Outfit';
+                cCtx.fillText(reason, 0, 10);
 
-                    // Title Text
-                    cCtx.fillStyle = '#ffffff';
-                    cCtx.font = '900 24px Outfit';
-                    cCtx.fillText("MAXWELL CAT SPIN!", 0, 80);
-                }
-                else if (memeId === 1337) {
-                    cCtx.fillStyle = '#22c55e';
-                    cCtx.font = '900 44px Outfit';
-                    cCtx.fillText("1337 HAX!", 0, -20);
-                }
+                cCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                cCtx.font = '900 10px Outfit';
+                cCtx.fillText("RE-CALIBRATING SYSTEM COGNITION...", 0, 50);
 
                 cCtx.restore();
 
                 if (elapsed < duration) {
-                    requestAnimationFrame(frame);
+                    requestAnimationFrame(cutsceneFrame);
                 } else {
                     isWarping = false;
                     cutsceneCanvas.style.display = 'none';
-                    
-                    gameActive = true;
-                    hud.classList.remove('hidden');
-                    canvas.style.pointerEvents = 'auto';
-                    player.vy = -35; 
-                    createBurst(player.x, player.y, '#f59e0b');
-                    triggerScreenShockwave(player.x, player.y, '#f59e0b');
-                    addFloatingText(player.x, player.y - 30, "COSMIC MEME WARP BOOSTER!", '#fbbf24');
-                    screenShake = 25;
+                    callback();
                 }
             }
-            frame();
+            cutsceneFrame();
         }
 
+        // --- ⚡ ULTRA-CINEMATIC VIGGO FRACTURE OVERDRIVE CUTSCENE ---
+        function triggerViggoFractureMode(callback) {
+            isWarping = true;
+            gameActive = false;
+            cutsceneCanvas.style.display = 'block';
+            hud.classList.add('hidden');
+
+            playSound('shatter');
+            setTimeout(() => playSound('explosion'), 200);
+
+            let start = Date.now();
+            let duration = 1800; 
+
+            let crackLines = [];
+            for (let i = 0; i < 15; i++) {
+                crackLines.push({
+                    x1: width / 2, y1: height / 2,
+                    x2: Math.random() * width, y2: Math.random() * height
+                });
+            }
+
+            function fractureFrame() {
+                let elapsed = Date.now() - start;
+                let progress = Math.min(elapsed / duration, 1);
+
+                if (progress < 0.7) {
+                    cCtx.fillStyle = 'white';
+                    cCtx.fillRect(0, 0, width, height);
+                } else {
+                    cCtx.fillStyle = '#020412';
+                    cCtx.fillRect(0, 0, width, height);
+                }
+
+                cCtx.strokeStyle = progress < 0.7 ? '#000000' : 'rgba(6, 182, 212, 0.8)';
+                cCtx.lineWidth = 3 * (1 - progress);
+                crackLines.forEach(line => {
+                    cCtx.beginPath();
+                    cCtx.moveTo(line.x1, line.y1);
+                    cCtx.lineTo(line.x2, line.y2);
+                    cCtx.stroke();
+                });
+
+                cCtx.save();
+                cCtx.translate(width / 2, height / 2);
+                let shake = (Math.random() - 0.5) * 20 * (1 - progress);
+                cCtx.translate(shake, shake);
+
+                cCtx.shadowBlur = 30;
+                cCtx.shadowColor = '#06b6d4';
+                cCtx.fillStyle = progress < 0.7 ? '#000' : '#ffffff';
+                cCtx.font = '900 48px Outfit';
+                cCtx.textAlign = 'center';
+                cCtx.textBaseline = 'middle';
+                cCtx.fillText("FRACTURE DETECTED!", 0, -20);
+
+                cCtx.font = '900 14px Outfit';
+                cCtx.fillStyle = '#ec4899';
+                cCtx.fillText("REALITY MATRIX INVERTED", 0, 30);
+                cCtx.restore();
+
+                if (elapsed < duration) {
+                    requestAnimationFrame(fractureFrame);
+                } else {
+                    isWarping = false;
+                    cutsceneCanvas.style.display = 'none';
+                    callback();
+                }
+            }
+            fractureFrame();
+        }
+
+        function spawnPlatform(y) {
+            const currentHeight = Math.max(0, Math.floor(-y/10));
+            platformCountForHeart++;
+            
+            let shrinkFactor = currentHeight > 1000 ? 0.6 : (currentHeight > 500 ? 0.8 : 1);
+            let baseWidth = window.inventory.platform_size ? 180 : 130;
+            const w = Math.max(50, baseWidth * shrinkFactor);
+            const px = Math.random() * (width - w);
+            
+            let color = rainbowColors[Math.floor(Math.random() * rainbowColors.length)];
+            let decay = (currentHeight > 600 && Math.random() < 0.3);
+
+            let ruleValue = Math.floor(Math.random() * 20) + 2;
+            let hasHeart = (platformCountForHeart >= 35 && Math.random() < getValgoHeartSpawnRate());
+            if (hasHeart) { platformCountForHeart = 0; color = '#f43f5e'; }
+
+            let powerupType = (!hasHeart && Math.random() < 0.07) ? (Math.random() > 0.5 ? 'shield' : 'magnet') : null;
+            let hasConceptNotebook = (!hasHeart && !powerupType && Math.random() < getNotebookSpawnRate());
+
+            platforms.push({ 
+                x: px, y: y, w: w, color, hit: false, decay, timer: 0, 
+                ruleValue, hasHeart, powerupType, hasConceptNotebook, hasClarenTree: false 
+            });
+            
+            if(Math.random() < getCrystalSpawnRate() && !hasHeart && !powerupType && !hasConceptNotebook) {
+                gameItems.push({ 
+                    type: Math.random() < 0.03 ? 'pi-shard' : 'normal',
+                    x: px + (w / 2), y: y - 30, r: 10, collected: false, phase: Math.random() * 10 
+                });
+            }
+        }
+
+        // --- NEW COGNITIVE LEAGUE PROGRESS SEARCH HELPER ---
+        function getCurrentLeagueIndex(alt) {
+            let index = 0;
+            for(let i=0; i<leagueRanksDatabase.length; i++) {
+                if (alt >= leagueRanksDatabase[i].threshold) index = i;
+            }
+            return index;
+        }
+
+        // --- TRICK TRIGGERS AND ABILITIES DETECTORS ---
+        function triggerMemeCutscene(val) {
+            addFloatingText(player.x, player.y - 40, `✨ SECRET MEME DECODE: ${val} ✨`, '#a855f7');
+            playSound('pi');
+        }
+
+        function triggerValgoSucksFireworks(x, y) {
+            heartMultiplierActive = true;
+            heartMultiplierTimerTicks = 1500; // 25 seconds
+            const multBadge = document.getElementById('heart-mult-badge');
+            if (multBadge) multBadge.classList.remove('hidden');
+
+            for (let i = 0; i < 24; i++) {
+                let angle = (i / 24) * Math.PI * 2;
+                worldParticles.push({
+                    x: x, y: y,
+                    vx: Math.cos(angle) * 8,
+                    vy: Math.sin(angle) * 8,
+                    life: 1.0,
+                    color: rainbowColors[i % 7],
+                    size: 4
+                });
+            }
+        }
+
+        function triggerScreenShockwave(x, y, color) {
+            shockwaves.push({ x, y, r: 10, maxRadius: 160, opacity: 1.0, color });
+        }
+
+        function flashFact() {
+            const el = document.getElementById('fact-notification');
+            const txt = document.getElementById('fact-text');
+            if(el && txt) {
+                txt.innerText = cosmicFacts[Math.floor(Math.random() * cosmicFacts.length)];
+                el.style.opacity = "1";
+                el.style.transform = "translateX(-1/2) scale(1)";
+                setTimeout(() => {
+                    el.style.opacity = "0";
+                    el.style.transform = "translateX(-1/2) scale(0.95)";
+                }, 3000);
+            }
+        }
+
+        function activateFeverMode() {
+            crystalCombo = 0;
+            feverMode = true;
+            feverTimer = getFeverDuration();
+            player.vy = -32;
+            playSound('boost');
+            triggerScreenShockwave(player.x, player.y, '#ec4899');
+            addFloatingText(player.x, player.y - 30, "HYPER DRIVE ACTIVATED!", '#ec4899');
+        }
+
+        // --- NEW MATH SESSION QUESTION GENERATOR ROUTINE ---
+        function generateSessionQuestion() {
+            document.getElementById('math-tracker').innerText = `${currentMathSessionIndex} / ${totalSessionQuestions}`;
+            const num1 = Math.floor(Math.random() * 10) + 2;
+            const num2 = Math.floor(Math.random() * 9) + 2;
+            const correct = num1 * num2;
+            
+            document.getElementById('math-question').innerText = `${num1} × ${num2} = ?`;
+            
+            let options = [correct];
+            while(options.length < 3) {
+                let fake = correct + (Math.floor(Math.random() * 15) - 7);
+                if (fake > 0 && !options.includes(fake)) options.push(fake);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const optContainer = document.getElementById('math-options');
+            optContainer.innerHTML = options.map(opt => `
+                <button onclick="window.submitMatheticAnswer(${opt}, ${correct})" class="btn-primary text-sm py-2">${opt}</button>
+            `).join('');
+        }
+
+        function launchPlayerDirectly() {
+            hud.classList.remove('hidden');
+            canvas.style.pointerEvents = 'auto';
+            
+            liveFlightFuelMax = calculatedThrustFuel;
+            liveFlightFuel = calculatedThrustFuel;
+            
+            if (activeGamemode === 'rule') {
+                document.getElementById('fuel-gauge-container').classList.add('hidden');
+                generateClimbRule();
+            } else {
+                document.getElementById('fuel-gauge-container').classList.remove('hidden');
+            }
+
+            // Apply special Viggo custom HUD adjustment
+            if (window.selectedSkin === 'viggo') {
+                viggoLives = 5;
+                document.getElementById('viggo-lives-container').classList.remove('hidden');
+                document.getElementById('viggo-lives-display').innerText = "5/5";
+            } else {
+                document.getElementById('viggo-lives-container').classList.add('hidden');
+            }
+
+            player.x = width / 2;
+            player.y = height - 150;
+            player.vx = 0;
+            player.vy = -18;
+            player.trail = [];
+            cameraY = player.y - height / 2;
+            
+            platforms = [];
+            gameItems = [];
+            worldParticles = [];
+            shockwaves = [];
+            floatingTexts = [];
+            comboCount = 0;
+            crystalCombo = 0;
+            feverMode = false;
+            activeHeartBoost = false;
+            magnetActive = false;
+            shieldActive = false;
+            heartMultiplierActive = false;
+            
+            spawnPlatform(height - 100);
+            for(let i=0; i<15; i++) {
+                spawnPlatform(height - 100 - (i * 140));
+            }
+
+            if (activeGamemode === 'blitz') {
+                generateInFlightBlitzGate();
+            }
+
+            gameActive = true;
+        }
+
+        function generateInFlightBlitzGate() {
+            const currentHighestY = platforms.length > 0 ? Math.min(...platforms.map(p => p.y)) : -500;
+            const num1 = Math.floor(Math.random() * 8) + 2;
+            const num2 = Math.floor(Math.random() * 7) + 2;
+            const correct = num1 * num2;
+            let wrong = correct + (Math.random() > 0.5 ? 4 : -4);
+            if (wrong === correct) wrong += 2;
+
+            activeGateQuestion = {
+                y: currentHighestY - 250,
+                text: `${num1} × ${num2}`,
+                correct: correct,
+                wrong: wrong,
+                correctSide: Math.random() > 0.5 ? 'left' : 'right',
+                passed: false
+            };
+        }
+
+        function generateClimbRule() {
+            const options = [12, 16, 18, 20, 24, 30, 36];
+            ruleTargetValue = options[Math.floor(Math.random() * options.length)];
+            ruleTargetText = `Factors of ${ruleTargetValue}`;
+            addFloatingText(width/2, cameraY + 100, `NEW RULE: LAND ON ${ruleTargetValue} FACTORS!`, '#f59e0b');
+        }
+
+        function matchesClimbRule(val) {
+            return ruleTargetValue % val === 0;
+        }
+
+        function triggerSeanWaterSplash(x, y) {
+            playSound('splash');
+            for(let i=0; i<8; i++) {
+                worldParticles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: -Math.random() * 6 - 2,
+                    life: 1.0, color: '#38bdf8', size: Math.random()*3 + 1
+                });
+            }
+        }
+
+        // --- MAIN GAMEPLAY LOOP SETUP & OPERATIONS ---
         function gameLoop() {
             if (!initialized || !ctx) {
                 requestAnimationFrame(gameLoop);
                 return;
             }
 
-            ctx.fillStyle = '#020412';
+            ctx.fillStyle = '#01020d';
+            ctx.fillRect(0, 0, width, height);
+
+            const altitudeRatio = Math.min(1.0, Math.max(0, -cameraY / 15000));
+            const nebGrd = ctx.createRadialGradient(width/2, height/2 - cameraY*0.2, 10, width/2, height/2 - cameraY*0.2, width);
+            nebGrd.addColorStop(0, `rgba(${Math.floor(6 + 30 * altitudeRatio)}, ${Math.floor(10 + 10 * (1 - altitudeRatio))}, ${Math.floor(32 + 50 * altitudeRatio)}, 0.2)`);
+            nebGrd.addColorStop(1, 'rgba(1, 2, 13, 0)');
+            ctx.fillStyle = nebGrd;
             ctx.fillRect(0, 0, width, height);
             
             ctx.save();
@@ -1557,6 +1513,8 @@
             ctx.restore();
 
             if (gameActive && !isWarping) {
+                updateAmbientMusicPitch(Math.max(0, Math.floor(-cameraY/10)));
+
                 if (activeGamemode === 'classic') {
                     if (!feverMode && !activeHeartBoost) {
                         liveFlightFuel -= 0.12; 
@@ -1567,7 +1525,6 @@
                     }
                 }
 
-                // Decrement neon pink active multiplier overlay timer
                 if (heartMultiplierActive) {
                     heartMultiplierTimerTicks--;
                     const remainingSeconds = Math.max(0, Math.ceil(heartMultiplierTimerTicks / 60));
@@ -1583,14 +1540,21 @@
                     }
                 }
 
-                // Active heart rocket boost frame tracker
+                if (magnetActive) {
+                    magnetTimerTicks--;
+                    if (magnetTimerTicks <= 0) {
+                        magnetActive = false;
+                        document.getElementById('magnet-active-badge').classList.add('hidden');
+                        addFloatingText(player.x, player.y - 30, "MAGNET EXPIRED", '#f59e0b');
+                    }
+                }
+
                 if (activeHeartBoost) {
                     heartBoostTimerTicks--;
                     if (heartBoostTimerTicks <= 0) {
                         activeHeartBoost = false;
-                        // Boost ended! Trigger spectacular "VALGO SUCKS" Firework Cutscene!
                         triggerValgoSucksFireworks(player.x, player.y);
-                        requestAnimationFrame(gameLoop); // SAFE LOOP SCHEDULING PREVENTS FREEZING
+                        requestAnimationFrame(gameLoop); 
                         return;
                     }
                 }
@@ -1598,13 +1562,27 @@
                 if (activeGamemode !== 'rule') {
                     if (liveFlightFuel <= 0) {
                         liveFlightFuel = 0;
-                        triggerFlightTermination();
+                        
+                        if (window.selectedSkin === 'viggo' && viggoLives > 0) {
+                            viggoLives--;
+                            document.getElementById('viggo-lives-display').innerText = `${viggoLives}/5`;
+                            liveFlightFuel = 40; 
+                            player.vy = -20;
+                            playSound('shatter');
+                            addFloatingText(player.x, player.y - 30, "VIGGO FUEL BYPASS INJECTED!", '#ef4444');
+                        } else {
+                            triggerDeathDiagnosticCutscene("FUEL STATUS: EMPTY RESERVES", () => {
+                                window.triggerFlightTermination();
+                            });
+                            requestAnimationFrame(gameLoop);
+                            return;
+                        }
                     }
                     const fuelBar = document.getElementById('hud-fuel-bar');
                     const fuelText = document.getElementById('hud-fuel-text');
                     if (fuelBar && fuelText) {
                         const fuelPercentage = (liveFlightFuel / liveFlightFuelMax) * 100;
-                        fuelBar.style.width = `${Math.max(0, fuelPercentage)}%`;
+                        fuelBar.style.width = fuelPercentage + '%';
                         fuelText.innerText = `${Math.max(0, Math.floor(liveFlightFuel))} Litres`;
                     }
                 }
@@ -1622,7 +1600,7 @@
                     }
                 }
 
-                let gravity = (feverMode || activeHeartBoost) ? 0.05 : (inventory.gravity_bubble > 0 ? 0.25 : 0.45);
+                let gravity = (feverMode || activeHeartBoost) ? 0.05 : (window.inventory.gravity_bubble > 0 ? 0.25 : 0.45);
                 player.vy += gravity;
                 player.y += player.vy;
                 
@@ -1649,13 +1627,12 @@
                     player.squishY += (1 - player.squishY) * 0.15;
                 }
 
-                // --- IN-FLIGHT BLITZ GATES COLLISION RESOLVER ---
                 if (activeGamemode === 'blitz' && activeGateQuestion && !activeGateQuestion.passed) {
-                    if (player.y < activeGateQuestion.y - 200) {
+                    if (player.y < activeGateQuestion.y - 150) {
                         generateInFlightBlitzGate();
                     }
                     
-                    if (Math.abs(player.y - activeGateQuestion.y) < 30) {
+                    if (Math.abs(player.y - activeGateQuestion.y) < 25) {
                         activeGateQuestion.passed = true;
                         
                         const leftGateX = width/3;
@@ -1667,57 +1644,96 @@
                         if (player.x >= width/2 && correctSide === 'right') isCorrect = true;
                         
                         if (isCorrect) {
-                            liveFlightFuel = Math.min(liveFlightFuelMax, liveFlightFuel + 30);
-                            player.vy = -28; 
+                            liveFlightFuel = Math.min(liveFlightFuelMax, liveFlightFuel + 25);
+                            player.vy = -26; 
+                            playSound('pi');
                             createBurst(player.x, player.y, '#10b981');
                             triggerScreenShockwave(player.x, player.y, '#10b981');
                             addFloatingText(player.x, player.y - 30, "CORRECT GATE! SPEEDBURST!", '#10b981');
                             sessionSparks += 20;
                         } else {
-                            liveFlightFuel = Math.max(0, liveFlightFuel - 40); 
-                            player.vy = 4; 
-                            createBurst(player.x, player.y, '#ef4444');
-                            triggerScreenShockwave(player.x, player.y, '#ef4444');
-                            addFloatingText(player.x, player.y - 30, "SIKE! WRONG NUMBER! 🎤", '#ef4444');
+                            if (shieldActive) {
+                                shieldActive = false;
+                                document.getElementById('shield-active-badge').classList.add('hidden');
+                                playSound('shatter');
+                                addFloatingText(player.x, player.y - 30, "🛡️ SHIELD ABSORBED STALL!", '#10b981');
+                            } else {
+                                liveFlightFuel = Math.max(0, liveFlightFuel - 30); 
+                                player.vy = 4; 
+                                playSound('shatter');
+                                createBurst(player.x, player.y, '#ef4444');
+                                triggerScreenShockwave(player.x, player.y, '#ef4444');
+                                addFloatingText(player.x, player.y - 30, "SIKE! WRONG NUMBER! 🎤", '#ef4444');
+                            }
                         }
                     }
                 }
 
-                // --- PLATFORMS COLLISION MECHANIC ---
                 platforms.forEach(p => {
                     if(player.vy > 0 && player.x + player.r > p.x && player.x - player.r < p.x+p.w && 
                        player.y+player.r > p.y && player.y+player.r < p.y+15 + player.vy) {
                         
-                        // --- 💖 TOUCH LIL HEART EXCLUSIVE PROPULSION COLLISION ---
                         if (p.hasHeart) {
                             p.hasHeart = false;
                             activeHeartBoost = true;
-                            heartBoostTimerTicks = 180; // 3 seconds flight at 60 FPS
-                            player.vy = -35; // Extreme vertical rocket launch speed!
+                            heartBoostTimerTicks = 180; 
+                            player.vy = -34; 
                             
+                            playSound('boost');
                             triggerScreenShockwave(player.x, player.y, '#f43f5e');
                             addFloatingText(player.x, player.y - 40, "💖 LIL HEART ACTIVATED!", '#f43f5e');
                             addFloatingText(player.x, player.y - 15, "ROCKET WARP DETECTED!", '#ec4899');
                             return;
                         }
 
-                        // --- INTERACTIVE MEME CHECKPOINT DETECTORS (EASTER EGGS) ---
+                        if (p.hasConceptNotebook) {
+                            p.hasConceptNotebook = false;
+                            window.gangConceptsCount++;
+                            playSound('pi');
+                            triggerScreenShockwave(player.x, player.y, '#06b6d4');
+                            addFloatingText(player.x, player.y - 35, "📘 CONCEPT UNLOCKED!", '#06b6d4');
+                            updateConceptsUI();
+                        }
+
+                        if (p.powerupType) {
+                            if (p.powerupType === 'shield') {
+                                shieldActive = true;
+                                document.getElementById('shield-active-badge').classList.remove('hidden');
+                                playSound('pi');
+                                addFloatingText(p.x + p.w/2, p.y - 30, "🛡️ SHIELD EQUIPPED!", '#10b981');
+                            } else {
+                                magnetActive = true;
+                                magnetTimerTicks = 600; 
+                                document.getElementById('magnet-active-badge').classList.remove('hidden');
+                                playSound('pi');
+                                addFloatingText(p.x + p.w/2, p.y - 30, "🧲 MAGNET EQUIPPED!", '#f59e0b');
+                            }
+                            p.powerupType = null;
+                        }
+
                         const memes = [21, 25, 67, 42, 100, 360, 9];
                         if (activeGamemode === 'rule' && memes.includes(p.ruleValue)) {
                             triggerMemeCutscene(p.ruleValue);
                             return;
                         }
 
-                        // Check factors logic climbing rules
                         if (activeGamemode === 'rule') {
                             const valid = matchesClimbRule(p.ruleValue);
                             if (!valid) {
-                                p.y += 2000; 
-                                createBurst(player.x, player.y, '#ef4444');
-                                triggerScreenShockwave(player.x, player.y, '#ef4444');
-                                addFloatingText(player.x, player.y - 30, "CRUMBLED! NOT A FACTOR", '#ef4444');
-                                comboCount = 0;
-                                return;
+                                if (shieldActive) {
+                                    shieldActive = false;
+                                    document.getElementById('shield-active-badge').classList.add('hidden');
+                                    playSound('bounce');
+                                    addFloatingText(player.x, player.y - 30, "🛡️ SHIELD SAVED STRIKE!", '#10b981');
+                                } else {
+                                    p.y += 2000; 
+                                    playSound('shatter');
+                                    createBurst(player.x, player.y, '#ef4444');
+                                    triggerScreenShockwave(player.x, player.y, '#ef4444');
+                                    addFloatingText(player.x, player.y - 30, "CRUMBLED! NOT A FACTOR", '#ef4444');
+                                    comboCount = 0;
+                                    return;
+                                }
                             } else {
                                 sessionSparks += 10;
                                 if (Math.random() < 0.2) {
@@ -1726,13 +1742,20 @@
                             }
                         }
 
-                        player.vy = inventory.jump_height ? -23 : -20; 
+                        if (selectedSkin === 'claren' && !p.hasClarenTree) {
+                            p.hasClarenTree = true; 
+                        }
+                        if (selectedSkin === 'sean') {
+                            triggerSeanWaterSplash(player.x, player.y);
+                        }
+
+                        player.vy = getPlayerBaseJumpPower(); 
                         player.squishX = 1.6;
                         player.squishY = 0.45;
+                        playSound('bounce');
                         
                         if(!p.hit) { 
-                            let sparkEarning = inventory.spark_multiplier ? 2 : 1;
-                            // Apply 2.5x Heart Overdrive Multiplier
+                            let sparkEarning = window.inventory.spark_multiplier ? 2 : 1;
                             if (heartMultiplierActive) sparkEarning = Math.round(sparkEarning * 2.5);
                             
                             sessionSparks += sparkEarning; 
@@ -1747,8 +1770,8 @@
                             addFloatingText(player.x, p.y - 25, `BOUNCE!`, '#22d3ee');
                         }
 
-                        createBurst(player.x, p.y, p.color);
-                        triggerScreenShockwave(player.x, p.y, p.color);
+                        createBurst(player.x, player.y, p.color);
+                        triggerScreenShockwave(player.x, player.y, p.color);
                         screenShake = 12;
                         
                         if (p.decay) {
@@ -1767,7 +1790,7 @@
                 });
 
                 gameItems.forEach(item => {
-                    const pullDist = (feverMode || activeHeartBoost) ? 450 : (inventory.cosmic_magnet ? 350 : (inventory.magnet ? 160 : 0));
+                    const pullDist = (feverMode || activeHeartBoost || magnetActive) ? 450 : (window.inventory.cosmic_magnet ? 350 : (window.inventory.magnet ? 160 : 0));
                     const dx = item.x - player.x; const dy = item.y - player.y;
                     const d = Math.sqrt(dx*dx + dy*dy);
                     if(d < pullDist) { item.x -= dx*0.14; item.y -= dy*0.14; }
@@ -1776,27 +1799,28 @@
                         item.collected = true;
                         
                         if (item.type === 'pi-shard') {
-                            piShards = Math.min(4, piShards + 1);
-                            localStorage.setItem('gj_pi_shards_v6', piShards);
+                            window.piShards = Math.min(4, window.piShards + 1);
+                            localStorage.setItem('gj_pi_shards_v6', window.piShards);
+                            playSound('pi');
                             createBurst(item.x, item.y, '#34d399');
                             triggerScreenShockwave(item.x, item.y, '#34d399');
                             addFloatingText(item.x, item.y - 25, "PI CONSTANT SHARD! (π)", '#34d399');
                         } else {
-                            let crystalEarning = inventory.shard_multiplier ? 2 : 1;
-                            // Apply 2.5x Heart Overdrive Multiplier
+                            let crystalEarning = window.inventory.shard_multiplier ? 2 : 1;
                             if (heartMultiplierActive) crystalEarning = Math.round(crystalEarning * 2.5);
 
                             sessionShards += crystalEarning;
+                            playSound('crystal');
                             createBurst(item.x, item.y, '#f472b6');
                             triggerScreenShockwave(item.x, item.y, '#f472b6');
                             flashFact(); 
                             
                             if (!feverMode && feverLockoutCooldownTicks <= 0 && !activeHeartBoost) {
                                 crystalCombo++;
-                                if (crystalCombo >= 3) {
+                                if (crystalCombo >= getFeverMaxCrystals()) {
                                     activateFeverMode();
                                 } else {
-                                    addFloatingText(item.x, item.y - 20, `CRYSTAL +${crystalCombo}/3!`, '#f472b6');
+                                    addFloatingText(item.x, item.y - 20, `CRYSTAL +${crystalCombo}/${getFeverMaxCrystals()}!`, '#f472b6');
                                 }
                             } else if (feverLockoutCooldownTicks > 0) {
                                 addFloatingText(item.x, item.y - 20, `FEVER COOLDOWN SYSTEM SECURED!`, '#fb7185');
@@ -1808,432 +1832,476 @@
                 });
 
                 if(player.y > cameraY + height + 100) {
-                    comboCount = 0; 
-                    
-                    if(inventory.phoenix > 0 && !feverMode && !activeHeartBoost) {
-                        inventory.phoenix--;
+                    if (window.selectedSkin === 'viggo' && viggoLives > 0) {
+                        viggoLives--;
+                        document.getElementById('viggo-lives-display').innerText = `${viggoLives}/5`;
+                        player.vy = -26;
+                        playSound('shatter');
+                        triggerScreenShockwave(player.x, player.y, '#f43f5e');
+                        addFloatingText(player.x, player.y - 30, `VIGGO DEFLECTED OUT! ${viggoLives} LIVES LEFT`, '#ef4444');
+                    } else if(window.inventory.phoenix > 0 && !feverMode && !activeHeartBoost) {
+                        window.inventory.phoenix--;
                         player.vy = -26; 
+                        playSound('boost');
                         createBurst(player.x, player.y, '#fff');
                         triggerScreenShockwave(player.x, player.y, '#fff');
-                        localStorage.setItem('gj_inv_v6', JSON.stringify(inventory));
+                        localStorage.setItem('gj_inv_v6', JSON.stringify(window.inventory));
                         renderShops();
                     } else if (feverMode || activeHeartBoost) {
                         player.vy = -25;
                         createBurst(player.x, player.y, '#f472b6');
                     } else {
-                        triggerFlightTermination();
+                        triggerDeathDiagnosticCutscene("VOID STATUS: ALTITUDE LOSS", () => {
+                            window.triggerFlightTermination();
+                        });
+                        requestAnimationFrame(gameLoop);
+                        return;
                     }
                 }
 
-                player.trail.unshift({x: player.x, y: player.y, sx: player.squishX, sy: player.squishY});
-                if(player.trail.length > 20) player.trail.pop();
-
-                const topY = Math.min(...platforms.map(p => p.y));
-                const currentHeight = Math.max(0, Math.floor(-topY/10));
-                let gapSizing = 150;
-                if (currentHeight > 300) gapSizing = 170;
-                if (currentHeight > 700) gapSizing = 195;
-                if (currentHeight > 1300) gapSizing = 220;
+                player.trail.unshift({x: player.x, y: player.y}); if(player.trail.length > 12) player.trail.pop();
                 
-                if(topY > cameraY - 300) spawnPlatform(topY - gapSizing);
+                // --- ROBUST PLATFORM GENERATION & GARBAGE COLLECTION PIPELINE (PREVENTS MILLION PLATFORMS BUG) ---
+                // Find the highest platform Y safely using a direct iterative scan (avoiding stack limits of spread operator)
+                let topY = Infinity;
+                for (let i = 0; i < platforms.length; i++) {
+                    if (platforms[i].y < topY) {
+                        topY = platforms[i].y;
+                    }
+                }
                 
-                platforms = platforms.filter(p => p.y < cameraY + height + 200);
-                
-                worldParticles.forEach(p => { 
-                    p.x += p.vx; 
-                    p.y += p.vy; 
-                    p.life -= 0.025; 
-                    if (p.operator) p.rotation += p.rotSpeed;
-                });
-                worldParticles = worldParticles.filter(p => p.life > 0);
+                // Spawn new platform precisely when the highest platform gets close to the camera view
+                if (topY > cameraY - 300) {
+                    spawnPlatform(topY - 140);
+                }
 
-                shockwaves.forEach(wave => {
-                    wave.r += 6;
-                    wave.opacity = Math.max(0, 1 - wave.r / wave.maxRadius);
-                });
-                shockwaves = shockwaves.filter(wave => wave.opacity > 0);
-
-                floatingTexts.forEach(txt => {
-                    txt.y += txt.vy;
-                    txt.opacity -= 0.02;
-                });
-                floatingTexts = floatingTexts.filter(txt => txt.opacity > 0);
+                // Actively prune platforms and items that fall far below viewport to prevent infinite array growth
+                platforms = platforms.filter(p => p.y < cameraY + height + 400);
+                gameItems = gameItems.filter(item => item.y < cameraY + height + 400);
             }
 
-            // Draw Loop
-            ctx.save();
-            if (gameActive) {
-                if (screenShake > 0) {
-                    ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
-                    screenShake *= 0.9;
+            // --- RENDER PIPELINE ---
+            ctx.save(); 
+            ctx.translate(0, -cameraY);
+
+            // 1. Draw Platforms
+            platforms.forEach(p => {
+                ctx.fillStyle = p.hit ? 'rgba(255,255,255,0.1)' : p.color;
+                ctx.beginPath(); ctx.roundRect(p.x, p.y, p.w, 12, 6); ctx.fill();
+                if (activeGamemode === 'rule') {
+                    ctx.fillStyle = '#fff'; ctx.font = 'bold 10px Outfit'; ctx.fillText(p.ruleValue, p.x+5, p.y+10);
                 }
-                ctx.translate(0, -cameraY);
+                if (p.hasHeart) { ctx.fillStyle = '#f43f5e'; ctx.font = '12px Outfit'; ctx.fillText('❤️', p.x + p.w/2 - 4, p.y - 8); }
+                if (p.hasConceptNotebook) { ctx.fillStyle = '#22d3ee'; ctx.font = '12px Outfit'; ctx.fillText('📘', p.x + p.w/2 - 4, p.y - 8); }
+            });
 
-                // DRAW DYNAMIC PLATFORM CONSTELLATION COUPLING MESH
-                ctx.save();
-                ctx.strokeStyle = 'rgba(6, 182, 212, 0.15)';
-                ctx.lineWidth = 1.5;
-                for (let i = 0; i < platforms.length; i++) {
-                    for (let j = i + 1; j < platforms.length; j++) {
-                        let p1 = platforms[i];
-                        let p2 = platforms[j];
-                        let dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-                        if (dist < 180) { 
-                            ctx.beginPath();
-                            ctx.moveTo(p1.x + p1.w / 2, p1.y);
-                            ctx.lineTo(p2.x + p2.w / 2, p2.y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-                ctx.restore();
+            // 2. Draw Crystals & Pi Shards
+            gameItems.forEach(item => {
+                if (!item.collected) {
+                    item.phase += 0.08;
+                    const bobbingY = Math.sin(item.phase) * 5;
+                    ctx.save();
+                    ctx.translate(item.x, item.y + bobbingY);
+                    
+                    if (item.type === 'pi-shard') {
+                        // Procedural constant matrix aura
+                        ctx.shadowBlur = 15;
+                        ctx.shadowColor = '#10b981';
+                        ctx.strokeStyle = '#10b981';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, item.r + 2, 0, Math.PI * 2);
+                        ctx.stroke();
 
-                // Draw shockwaves ripples
-                shockwaves.forEach(wave => {
-                    ctx.strokeStyle = wave.color;
-                    ctx.globalAlpha = wave.opacity;
-                    ctx.lineWidth = 3;
-                    ctx.beginPath();
-                    ctx.arc(wave.x, wave.y, wave.r, 0, Math.PI * 2);
-                    ctx.stroke();
-                });
-                ctx.globalAlpha = 1.0;
-                
-                // Platforms
-                platforms.forEach(p => {
-                    ctx.shadowBlur = p.hit ? 0 : (p.decay ? 18 : 25); 
-                    ctx.shadowColor = p.color;
-                    ctx.fillStyle = p.hit ? 'rgba(255,255,255,0.08)' : p.color;
-                    ctx.beginPath(); 
-                    ctx.roundRect(p.x, p.y, p.w, 14, 8); 
-                    ctx.fill();
-
-                    // Render numerical labels on platforms during Rule gamemode
-                    if (activeGamemode === 'rule') {
-                        ctx.shadowBlur = 0;
                         ctx.fillStyle = '#ffffff';
-                        ctx.font = '900 11px Outfit';
+                        ctx.font = 'bold 13px Outfit';
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
-                        ctx.fillText(p.ruleValue, p.x + p.w / 2, p.y + 7);
-                    }
-
-                    // --- 💖 DRAW SPINNING HOLOGRAPHIC LIL HEART ---
-                    if (p.hasHeart) {
-                        ctx.shadowBlur = 25;
-                        ctx.shadowColor = '#f43f5e';
-                        ctx.fillStyle = '#ffffff';
+                        ctx.fillText('π', 0, -1);
+                    } else {
+                        // Pulsating Octahedron (3D Crystal Shape)
+                        ctx.shadowBlur = 20;
+                        ctx.shadowColor = '#ec4899';
                         
-                        ctx.save();
-                        // Spin speed calculated via Frame timer
-                        const pulseScale = 1.0 + Math.sin(Date.now() / 150) * 0.15;
-                        ctx.translate(p.x + p.w / 2, p.y - 20);
-                        ctx.scale(pulseScale, pulseScale);
-                        
-                        // Heart Geometrical Vector Mapping
+                        ctx.fillStyle = 'rgba(217, 70, 239, 0.95)';
                         ctx.beginPath();
-                        ctx.moveTo(0, -5);
-                        ctx.bezierCurveTo(-5, -11, -12, -7, -12, -1);
-                        ctx.bezierCurveTo(-12, 5, -5, 9, 0, 14);
-                        ctx.bezierCurveTo(5, 9, 12, 5, 12, -1);
-                        ctx.bezierCurveTo(12, -7, 5, -11, 0, -5);
+                        ctx.moveTo(0, -item.r); // Top Point
+                        ctx.lineTo(item.r * 0.7, 0); // Right Corner
+                        ctx.lineTo(0, item.r); // Bottom Point
+                        ctx.lineTo(-item.r * 0.7, 0); // Left Corner
                         ctx.closePath();
-                        ctx.fillStyle = '#f43f5e';
                         ctx.fill();
-                        ctx.restore();
+
+                        // Shimmer highlight facet
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                        ctx.beginPath();
+                        ctx.moveTo(0, -item.r);
+                        ctx.lineTo(0, item.r);
+                        ctx.lineTo(-item.r * 0.7, 0);
+                        ctx.closePath();
+                        ctx.fill();
                     }
-                });
-
-                // --- DRAW IN-FLIGHT BLITZ GATES ---
-                if (activeGamemode === 'blitz' && activeGateQuestion) {
-                    ctx.save();
-                    const gateY = activeGateQuestion.y;
-                    const correctSide = activeGateQuestion.correctSide;
-                    const leftVal = correctSide === 'left' ? activeGateQuestion.correct : activeGateQuestion.wrong;
-                    const rightVal = correctSide === 'right' ? activeGateQuestion.correct : activeGateQuestion.wrong;
-
-                    // Neon split barrier
-                    ctx.strokeStyle = 'rgba(6, 182, 212, 0.4)';
-                    ctx.lineWidth = 4;
-                    ctx.setLineDash([5, 15]);
-                    ctx.beginPath();
-                    ctx.moveTo(width/2, gateY - 200);
-                    ctx.lineTo(width/2, gateY + 200);
-                    ctx.stroke();
-
-                    // Render center gate formula
-                    ctx.shadowBlur = 20;
-                    ctx.shadowColor = '#06b6d4';
-                    ctx.fillStyle = '#22d3ee';
-                    ctx.font = '900 22px Outfit';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(activeGateQuestion.text, width/2, gateY - 80);
-
-                    // Render portal selectors
-                    ctx.font = '900 32px Outfit';
-                    ctx.shadowColor = '#10b981';
-                    ctx.fillStyle = '#ffffff';
-                    
-                    ctx.fillText(leftVal, width / 4, gateY);
-                    ctx.fillText(rightVal, (width / 4) * 3, gateY);
                     ctx.restore();
                 }
+            });
+
+            // 3. Update & Draw Particles (Math Operators Burst)
+            worldParticles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.02; // decay life over time
                 
-                // Crystals & Shards
-                gameItems.forEach(item => {
-                    if(!item.collected) {
-                        item.phase += 0.1;
-                        const hoverY = Math.sin(item.phase) * 6;
-                        
-                        if (item.type === 'pi-shard') {
-                            ctx.shadowBlur = 25;
-                            ctx.shadowColor = '#10b981';
-                            ctx.fillStyle = '#ffffff';
-                            ctx.save();
-                            ctx.translate(item.x, item.y + hoverY);
-                            ctx.rotate(item.phase * 0.4);
-                            ctx.font = '900 16px Outfit';
-                            ctx.textAlign = 'center';
-                            ctx.textBaseline = 'middle';
-                            ctx.fillText('π', 0, 0);
-                            ctx.restore();
-                        } else {
-                            ctx.shadowBlur = 20; 
-                            ctx.shadowColor = feverMode ? '#f472b6' : '#d946ef';
-                            ctx.fillStyle = 'white';
-                            
-                            ctx.save();
-                            ctx.translate(item.x, item.y + hoverY);
-                            ctx.rotate(item.phase * 0.5);
-                            ctx.beginPath();
-                            ctx.moveTo(0, -item.r);
-                            ctx.lineTo(item.r * 0.7, 0);
-                            ctx.lineTo(0, item.r);
-                            ctx.lineTo(-item.r * 0.7, 0);
-                            ctx.closePath();
-                            ctx.fill();
-                            ctx.restore();
+                if (p.life > 0) {
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.globalAlpha = p.life;
+                    if (p.operator) {
+                        ctx.fillStyle = p.color;
+                        ctx.font = 'bold ' + (p.size * 3.5) + 'px Outfit';
+                        ctx.rotate(p.rotation || 0);
+                        if (p.rotSpeed) p.rotation += p.rotSpeed;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(p.operator, 0, 0);
+                    } else {
+                        ctx.fillStyle = p.color;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+            });
+            worldParticles = worldParticles.filter(p => p.life > 0); // Garbage collection
+
+            // 4. Update & Draw Shockwaves (Pulsing Energy Rings)
+            shockwaves.forEach(s => {
+                s.r += (s.maxRadius - s.r) * 0.1;
+                s.opacity -= 0.04;
+                if (s.opacity > 0) {
+                    ctx.save();
+                    ctx.strokeStyle = s.color;
+                    ctx.globalAlpha = s.opacity;
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            });
+            shockwaves = shockwaves.filter(s => s.opacity > 0); // Garbage collection
+
+            // 5. Update & Draw Floating Combo Text
+            floatingTexts.forEach(ft => {
+                ft.y += ft.vy;
+                ft.opacity -= 0.02;
+                if (ft.opacity > 0) {
+                    ctx.save();
+                    ctx.globalAlpha = ft.opacity;
+                    ctx.fillStyle = ft.color;
+                    ctx.font = '900 13px Outfit';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(ft.text, ft.x, ft.y);
+                    ctx.restore();
+                }
+            });
+            floatingTexts = floatingTexts.filter(ft => ft.opacity > 0); // Garbage collection
+
+            // 6. Draw Player Trail
+            player.trail.forEach((t, i) => {
+                ctx.fillStyle = `rgba(6, 182, 212, ${0.4 - (i/30)})`;
+                ctx.beginPath(); ctx.arc(t.x, t.y, player.r * (1 - i/15), 0, Math.PI*2); ctx.fill();
+            });
+
+            // 7. GORGEOUS PROCEDURAL AVATARS & PROPULSION CORES (WITH SQUISH SCALING)
+            ctx.save();
+            ctx.translate(player.x, player.y);
+            
+            // Neon shadow system glow aura
+            ctx.shadowBlur = feverMode ? 35 : 20;
+            ctx.shadowColor = feverMode ? '#ec4899' : '#06b6d4';
+            ctx.scale(player.squishX, player.squishY);
+
+            if (window.selectedSkin === 'golden') {
+                ctx.shadowColor = '#eab308';
+                ctx.fillStyle = '#fef08a';
+            } else if (window.selectedSkin === 'fibonacci') {
+                ctx.shadowColor = '#a855f7';
+                ctx.fillStyle = '#f3e8ff';
+            } else if (window.selectedSkin === 'prime') {
+                ctx.shadowColor = '#f87171';
+                ctx.fillStyle = '#fca5a5';
+            } else if (window.selectedSkin === 'fractal') {
+                ctx.shadowColor = '#38bdf8';
+                ctx.fillStyle = '#e0f2fe';
+            } else if (window.selectedSkin === 'infinity') {
+                ctx.shadowColor = rainbowColors[Math.floor(Date.now() / 200) % 7];
+                ctx.fillStyle = '#ffffff';
+            } else if (window.selectedSkin === 'pi_skin') {
+                ctx.shadowColor = '#10b981';
+                ctx.fillStyle = '#e6fffa';
+            } else if (window.selectedSkin === 'claren') {
+                ctx.shadowColor = '#10b981';
+                ctx.fillStyle = '#ecfdf5';
+            } else if (window.selectedSkin === 'sophie') {
+                ctx.shadowColor = '#a855f7';
+                ctx.fillStyle = '#faf5ff';
+            } else if (window.selectedSkin === 'yoon_ah') {
+                ctx.shadowColor = '#22d3ee';
+                ctx.fillStyle = '#ecfeff';
+            } else if (window.selectedSkin === 'hubert') {
+                ctx.shadowColor = '#f59e0b';
+                ctx.fillStyle = '#fffbeb';
+            } else if (window.selectedSkin === 'sean') {
+                ctx.shadowColor = '#38bdf8';
+                ctx.fillStyle = '#f0f9ff';
+            } else if (window.selectedSkin === 'curtis') {
+                ctx.shadowColor = '#ef4444';
+                ctx.fillStyle = '#fef2f2';
+            } else if (window.selectedSkin === 'viggo') {
+                ctx.shadowColor = '#8b5cf6';
+                ctx.fillStyle = '#f5f3ff';
+            } else {
+                ctx.shadowColor = '#06b6d4';
+                ctx.fillStyle = '#ffffff';
+            }
+
+            // Draw outer shell structures
+            if (window.selectedSkin === 'fractal' && !feverMode && !activeHeartBoost) {
+                ctx.beginPath();
+                for (let step = 0; step < 8; step++) {
+                    ctx.lineTo(0, player.r * (step % 2 === 0 ? 1 : 0.4));
+                    ctx.rotate(Math.PI / 4);
+                }
+                ctx.closePath();
+                ctx.fill();
+            } else if (window.selectedSkin === 'prime' && !feverMode && !activeHeartBoost) {
+                ctx.beginPath();
+                ctx.rect(-player.r, -player.r, player.r * 2, player.r * 2);
+                ctx.fill();
+            } else {
+                ctx.beginPath();
+                ctx.arc(0, 0, player.r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Draw procedural graphics over outer shells (Golden spiral, Concentric rings, etc.)
+            if (!feverMode && !activeHeartBoost) {
+                if (window.selectedSkin === 'golden') {
+                    ctx.strokeStyle = 'rgba(202, 138, 4, 0.5)';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    for (let theta = 0; theta < Math.PI * 4; theta += 0.1) {
+                        let rad = 1.1 * Math.pow(1.15, theta);
+                        if (rad < player.r) {
+                            ctx.lineTo(rad * Math.cos(theta), rad * Math.sin(theta));
                         }
                     }
-                });
-
-                // Trails
-                player.trail.forEach((t, i) => {
-                    ctx.globalAlpha = (1 - (i / 20)) * 0.5;
-                    
-                    if (feverMode || activeHeartBoost) {
-                        ctx.fillStyle = rainbowColors[i % 7];
-                    } else if (selectedSkin === 'golden') {
-                        ctx.fillStyle = `rgba(234, 179, 8, ${1 - i / 20})`;
-                    } else if (selectedSkin === 'fibonacci') {
-                        ctx.fillStyle = `rgba(168, 85, 247, ${1 - i / 20})`;
-                    } else if (selectedSkin === 'prime') {
-                        ctx.fillStyle = `rgba(239, 68, 68, ${1 - i / 20})`;
-                    } else if (selectedSkin === 'fractal') {
-                        ctx.fillStyle = `rgba(34, 211, 238, ${1 - i / 20})`;
-                    } else if (selectedSkin === 'infinity') {
-                        ctx.fillStyle = rainbowColors[(i + Math.floor(Date.now() / 150)) % 7];
-                    } else if (selectedSkin === 'pi_skin') {
-                        ctx.fillStyle = `rgba(16, 185, 129, ${1 - i / 20})`;
-                    } else {
-                        ctx.fillStyle = inventory.trail_rainbow ? rainbowColors[i % 7] : '#22d3ee';
-                    }
-                    
-                    ctx.save();
-                    ctx.translate(t.x, t.y);
+                    ctx.stroke();
+                } else if (window.selectedSkin === 'fibonacci') {
+                    ctx.strokeStyle = 'rgba(126, 34, 206, 0.4)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.arc(0, 0, player.r * 0.4, 0, Math.PI*2); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(0, 0, player.r * 0.75, 0, Math.PI*2); ctx.stroke();
+                } else if (window.selectedSkin === 'prime') {
+                    ctx.strokeStyle = 'rgba(185, 28, 28, 0.4)';
+                    ctx.lineWidth = 1;
                     ctx.beginPath();
-                    ctx.ellipse(0, 0, player.r * (1 - i / 20) * t.sx, player.r * (1 - i / 20) * t.sy, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-                });
-                ctx.globalAlpha = 1;
-
-                // Player Core
-                ctx.save();
-                ctx.translate(player.x, player.y);
-                
-                ctx.shadowBlur = (feverMode || activeHeartBoost) ? 40 : 30; 
-                
-                if (feverMode || activeHeartBoost) {
-                    ctx.shadowColor = '#f43f5e';
-                    ctx.fillStyle = 'white';
-                } else if (selectedSkin === 'golden') {
-                    ctx.shadowColor = '#eab308';
-                    ctx.fillStyle = '#fef08a';
-                } else if (selectedSkin === 'fibonacci') {
-                    ctx.shadowColor = '#a855f7';
-                    ctx.fillStyle = '#f3e8ff';
-                } else if (selectedSkin === 'prime') {
-                    ctx.shadowColor = '#f87171';
-                    ctx.fillStyle = '#fca5a5';
-                } else if (selectedSkin === 'fractal') {
-                    ctx.shadowColor = '#38bdf8';
-                    ctx.fillStyle = '#e0f2fe';
-                } else if (selectedSkin === 'infinity') {
-                    ctx.shadowColor = rainbowColors[Math.floor(Date.now() / 200) % 7];
-                    ctx.fillStyle = '#ffffff';
-                } else if (selectedSkin === 'pi_skin') {
-                    ctx.shadowColor = '#10b981';
-                    ctx.fillStyle = '#e6fffa';
-                } else {
-                    ctx.shadowColor = '#fff';
-                    ctx.fillStyle = 'white';
-                }
-                
-                if (selectedSkin === 'fractal' && !feverMode && !activeHeartBoost) {
-                    ctx.beginPath();
-                    for (let step = 0; step < 8; step++) {
-                        ctx.rotate(Math.PI / 4);
-                        ctx.lineTo(0, player.r * (step % 2 === 0 ? 1 : 0.4));
-                    }
-                    ctx.closePath();
-                    ctx.fill();
-                } else if (selectedSkin === 'prime' && !feverMode && !activeHeartBoost) {
-                    ctx.beginPath();
-                    ctx.rect(-player.r * player.squishX, -player.r * player.squishY, player.r * 2 * player.squishX, player.r * 2 * player.squishY);
-                    ctx.fill();
-                } else {
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, player.r * player.squishX, player.r * player.squishY, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-                
-                ctx.shadowBlur = 0;
-                if (feverMode || activeHeartBoost) {
-                    ctx.fillStyle = '#e11d48';
-                } else if (selectedSkin === 'golden') {
-                    ctx.fillStyle = '#ca8a04';
-                } else if (selectedSkin === 'fibonacci') {
-                    ctx.fillStyle = '#7e22ce';
-                } else if (selectedSkin === 'prime') {
-                    ctx.fillStyle = '#b91c1c';
-                } else if (selectedSkin === 'fractal') {
-                    ctx.fillStyle = '#0369a1';
-                } else if (selectedSkin === 'infinity') {
-                    ctx.fillStyle = rainbowColors[Math.floor(Date.now() / 150) % 7];
-                } else if (selectedSkin === 'pi_skin') {
-                    ctx.fillStyle = '#059669';
-                } else {
-                    ctx.fillStyle = '#06b6d4';
-                }
-                
-                if (selectedSkin === 'pi_skin' && !feverMode && !activeHeartBoost) {
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = '900 12px Outfit';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText('π', 0, 0);
-                } else if (selectedSkin === 'fibonacci' && !feverMode && !activeHeartBoost) {
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = '900 12px Outfit';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText('Φ', 0, 0);
-                } else {
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, player.r * 0.4 * player.squishX, player.r * 0.4 * player.squishY, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-                
-                ctx.restore();
-
-                // Particle explosions
-                worldParticles.forEach(p => {
-                    ctx.globalAlpha = p.life;
-                    ctx.fillStyle = p.color;
-                    
-                    if (p.operator) {
-                        ctx.font = `900 ${p.size * 3.5}px Outfit`;
-                        ctx.save();
-                        ctx.translate(p.x, p.y);
-                        ctx.rotate(p.rotation);
-                        ctx.fillText(p.operator, 0, 0);
-                        ctx.restore();
-                    } else {
-                        ctx.beginPath(); 
-                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); 
-                        ctx.fill();
-                    }
-                });
-                ctx.globalAlpha = 1.0;
-
-                floatingTexts.forEach(txt => {
-                    ctx.globalAlpha = txt.opacity;
-                    ctx.fillStyle = txt.color;
-                    ctx.font = '900 20px Outfit';
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = 'black';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(txt.text, txt.x, txt.y);
-                });
-                ctx.shadowBlur = 0;
-                ctx.globalAlpha = 1.0;
-
-                ctx.restore();
-            } else if (!gameActive && !isWarping) {
-                if (ctx) {
-                    ctx.fillStyle = '#020617';
-                    ctx.fillRect(0,0,width,height);
+                    ctx.moveTo(-player.r, 0); ctx.lineTo(player.r, 0);
+                    ctx.moveTo(0, -player.r); ctx.lineTo(0, player.r);
+                    ctx.stroke();
                 }
             }
-            
-            updateCurrencyUI();
+
+            // Inner Core Colors
+            ctx.shadowBlur = 0;
+            if (feverMode || activeHeartBoost) {
+                ctx.fillStyle = '#e11d48';
+            } else if (window.selectedSkin === 'golden') {
+                ctx.fillStyle = '#ca8a04';
+            } else if (window.selectedSkin === 'fibonacci') {
+                ctx.fillStyle = '#7e22ce';
+            } else if (window.selectedSkin === 'prime') {
+                ctx.fillStyle = '#b91c1c';
+            } else if (window.selectedSkin === 'fractal') {
+                ctx.fillStyle = '#0369a1';
+            } else if (window.selectedSkin === 'infinity') {
+                ctx.fillStyle = rainbowColors[Math.floor(Date.now() / 150) % 7];
+            } else if (window.selectedSkin === 'pi_skin') {
+                ctx.fillStyle = '#059669';
+            } else if (window.selectedSkin === 'claren') {
+                ctx.fillStyle = '#047857';
+            } else if (window.selectedSkin === 'sophie') {
+                ctx.fillStyle = '#6d28d9';
+            } else if (window.selectedSkin === 'yoon_ah') {
+                ctx.fillStyle = '#0e7490';
+            } else if (window.selectedSkin === 'hubert') {
+                ctx.fillStyle = '#b45309';
+            } else if (window.selectedSkin === 'sean') {
+                ctx.fillStyle = '#0369a1';
+            } else if (window.selectedSkin === 'curtis') {
+                ctx.fillStyle = '#b91c1c';
+            } else if (window.selectedSkin === 'viggo') {
+                ctx.fillStyle = '#6d28d9';
+            } else {
+                ctx.fillStyle = '#06b6d4';
+            }
+
+            // Draw inner cores or unique glyphs
+            if (window.selectedSkin === 'pi_skin' && !feverMode && !activeHeartBoost) {
+                ctx.fillStyle = '#059669';
+                ctx.font = '900 12px Outfit';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('π', 0, 0);
+            } else if (window.selectedSkin === 'fibonacci' && !feverMode && !activeHeartBoost) {
+                ctx.fillStyle = '#7e22ce';
+                ctx.font = '900 11px Outfit';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('Φ', 0, 0);
+            } else if (window.selectedSkin === 'claren' && !feverMode && !activeHeartBoost) {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px Outfit';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🐨', 0, 0);
+            } else if (window.selectedSkin === 'sophie' && !feverMode && !activeHeartBoost) {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px Outfit';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🧪', 0, 0);
+            } else if (window.selectedSkin === 'yoon_ah' && !feverMode && !activeHeartBoost) {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px Outfit';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('⚛️', 0, 0);
+            } else if (window.selectedSkin === 'hubert' && !feverMode && !activeHeartBoost) {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px Outfit';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('⛏️', 0, 0);
+            } else if (window.selectedSkin === 'sean' && !feverMode && !activeHeartBoost) {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px Outfit';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🐬', 0, 0);
+            } else if (window.selectedSkin === 'curtis' && !feverMode && !activeHeartBoost) {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px Outfit';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🔥', 0, 0);
+            } else if (window.selectedSkin === 'viggo' && !feverMode && !activeHeartBoost) {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px Outfit';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('👑', 0, 0);
+            } else {
+                ctx.beginPath();
+                ctx.arc(0, 0, player.r * 0.45, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.restore();
+            ctx.restore();
+
+            window.updateCurrencyUI();
             requestAnimationFrame(gameLoop);
         }
 
-        function handleInput(x) {
-            if(!gameActive || mathActive) return;
-            if(player.vy > 0.5 && inventory.double_jump > 0) {
-                player.vy = -14; 
-                inventory.double_jump--;
-                localStorage.setItem('gj_inv_v6', JSON.stringify(inventory));
-                renderShops();
-                createBurst(player.x, player.y, '#fff');
-                addFloatingText(player.x, player.y - 20, "DOUBLE LEAP!", '#38bdf8');
+        window.triggerFlightTermination = function() {
+            canvas.style.pointerEvents = 'none';
+            gameActive = false;
+            feverMode = false;
+            activeHeartBoost = false;
+            heartMultiplierActive = false;
+            shieldActive = false;
+            magnetActive = false;
+
+            const multBadge = document.getElementById('heart-mult-badge');
+            if (multBadge) multBadge.classList.add('hidden');
+            document.getElementById('shield-active-badge').classList.add('hidden');
+            document.getElementById('magnet-active-badge').classList.add('hidden');
+            
+            const reachedAlt = Math.max(0, Math.floor(-cameraY/10));
+            const oldLeagueIndex = getCurrentLeagueIndex(window.bestAltitude);
+            const newLeagueIndex = getCurrentLeagueIndex(reachedAlt);
+
+            if (reachedAlt > window.bestAltitude) {
+                window.bestAltitude = reachedAlt;
+                localStorage.setItem('gj_best_alt_v6', window.bestAltitude);
             }
-            targetX = x;
-        }
+
+            window.sparksBalance += sessionSparks;
+            window.shardsBalance += sessionShards;
+            localStorage.setItem('gj_sparks_v6', window.sparksBalance);
+            localStorage.setItem('gj_shards_v6', window.shardsBalance);
+            localStorage.setItem('gj_pi_shards_v6', window.piShards);
+            localStorage.setItem('gj_gang_concepts_v6', window.gangConceptsCount);
+
+            sessionSparks = 0; sessionShards = 0;
+            hud.classList.add('hidden');
+            
+            // Hide custom platforms, reset Home view cleanly
+            homeScreen.className = 'screen';
+            renderSkinsSelector();
+            window.updateCurrencyUI();
+        };
 
         // Self-healing initialization routine
         function safeInit() {
-            if (initialized) return;
+            if (window.initialized) return;
 
-            canvas = document.getElementById('gameCanvas');
-            cutsceneCanvas = document.getElementById('cutscene-layer');
-            homeScreen = document.getElementById('home-screen');
-            cosmicScreen = document.getElementById('cosmic-screen');
-            mathScreen = document.getElementById('math-screen');
-            hud = document.getElementById('hud');
+            window.canvas = document.getElementById('gameCanvas');
+            window.cutsceneCanvas = document.getElementById('cutscene-layer');
+            window.homeScreen = document.getElementById('home-screen');
+            window.cosmicScreen = document.getElementById('cosmic-screen');
+            window.mathScreen = document.getElementById('math-screen');
+            window.hud = document.getElementById('hud');
 
             if (!canvas || !cutsceneCanvas || !homeScreen || !cosmicScreen || !mathScreen || !hud) {
                 return;
             }
 
-            ctx = canvas.getContext('2d');
-            cCtx = cutsceneCanvas.getContext('2d');
-            initialized = true;
+            window.ctx = canvas.getContext('2d');
+            window.cCtx = cutsceneCanvas.getContext('2d');
+            window.initialized = true;
 
-            // Bind events safely
             canvas.addEventListener('mousedown', e => handleInput(e.clientX));
             canvas.addEventListener('mousemove', e => { if (e.buttons > 0) handleInput(e.clientX); });
-            canvas.addEventListener('touchstart', e => { handleInput(e.touches[0].clientX); e.preventDefault(); }, {passive: false});
-            canvas.addEventListener('touchmove', e => { handleInput(e.touches[0].clientX); e.preventDefault(); }, {passive: false});
+            canvas.addEventListener('touchstart', e => { handleInput(e.touches[0].clientX); }, {passive: true});
+            canvas.addEventListener('touchmove', e => { handleInput(e.touches[0].clientX); }, {passive: true});
             
             window.addEventListener('resize', () => {
-                resize();
+                resizeGameCanvas();
                 initParallaxBackground();
             });
             
             canvas.style.pointerEvents = 'none'; 
-            resize();
+            resizeGameCanvas();
             initParallaxBackground();
             renderSkinsSelector();
             renderShops();
-            updateCurrencyUI();
+            window.updateCurrencyUI();
+
+            // Set Mute button labels on safe start
+            const btns = document.querySelectorAll('.btn-mute-toggle');
+            btns.forEach(btn => {
+                btn.innerHTML = window.isMuted ? '🔇 Muted' : '🔊 Sound On';
+            });
         }
 
-        // --- GLOBAL REGISTER OF EXPORT FUNCTIONS ---
-        // Expose functions to window safely
+        // --- MAP DYNAMIC EXPORTS TO WINDOW SCOPE ---
+        window.getCurrentLeagueIndex = getCurrentLeagueIndex;
+        window.updateCurrencyUI = updateCurrencyUI;
+        window.resizeGameCanvas = resizeGameCanvas;
+        window.initParallaxBackground = initParallaxBackground;
         window.triggerCosmicWarp = triggerCosmicWarp;
         window.reverseWarp = reverseWarp;
         window.startMathleticsSession = startMathleticsSession;
@@ -2242,10 +2310,14 @@
         window.selectSkin = selectSkin;
         window.buySkin = buySkin;
         window.craftPiSkin = craftPiSkin;
-        window.clickLabHeader = clickLabHeader;
-        window.adminCheat = adminCheat;
+        window.renderSkinsSelector = renderSkinsSelector;
         window.renderShops = renderShops;
         window.buyItem = buyItem;
+        window.decodeConceptNotebook = decodeConceptNotebook;
+        window.clickLabHeader = clickLabHeader;
+        window.adminCheat = adminCheat;
+        window.initAudio = initAudio;
+        window.playSound = playSound;
 
         safeInit();
         document.addEventListener('DOMContentLoaded', safeInit);
