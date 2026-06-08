@@ -279,7 +279,7 @@
     <!-- Cosmic Lab -->
     <div id="cosmic-screen" class="screen hidden-screen" onmousedown="event.stopPropagation()" ontouchstart="event.stopPropagation()">
         <div class="glass border-fuchsia-500/50 bg-black/95 shadow-[0_0_80px_rgba(217,70,239,0.3)]">
-            <h2 class="text-3xl font-black mb-1 tracking-tighter italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-yellow-500 cursor-pointer" id="lab-header" onclick="window.clickLabHeader()">
+            <h2 class="text-3xl font-black mb-1 tracking-tighter italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-yellow-500 cursor-pointer" id="lab-header">
                 LABORATORY
             </h2>
             <p class="text-[10px] uppercase tracking-[0.3em] text-fuchsia-400 mb-3 font-bold">Scientific Tuning</p>
@@ -306,6 +306,19 @@
         </div>
     </div>
 
+    <!-- Administrative Bypass Verification Dialog -->
+    <div id="password-modal" class="screen hidden-screen z-[250]" onmousedown="event.stopPropagation()" ontouchstart="event.stopPropagation()">
+        <div class="glass border-cyan-400 shadow-[0_0_80px_rgba(6,182,212,0.4)]">
+            <h3 class="text-xl font-black mb-1 text-cyan-400 italic">SYSTEM OVERRIDE DETECTED</h3>
+            <p class="text-[9px] uppercase tracking-widest opacity-60 mb-4 font-bold text-white">Enter cognitive passkey blueprint</p>
+            <input type="text" id="passkey-input" class="w-full bg-slate-900 border border-cyan-500/30 rounded-xl p-2.5 text-center text-white mb-4 focus:outline-none focus:border-cyan-400 font-bold tracking-widest text-sm" placeholder="Type password here...">
+            <div class="flex gap-2">
+                <button onclick="window.submitPasskey()" class="btn-primary py-2 mt-0 w-1/2 text-xs uppercase">Confirm</button>
+                <button onclick="window.closePasskeyModal()" class="w-1/2 bg-white/10 rounded-full font-bold text-xs hover:bg-white/20 transition-all border border-white/10 text-white">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- HUD -->
     <div id="hud" class="fixed top-0 left-0 w-full p-6 pointer-events-none z-[150] flex justify-between items-start hidden">
         <div class="flex flex-col gap-3">
@@ -327,6 +340,12 @@
                 </div>
                 <div class="bg-amber-500/10 backdrop-blur-xl px-2.5 py-1.5 rounded-xl border border-amber-500/30 text-[10px] hidden" id="magnet-active-badge">
                     <span class="text-amber-400 font-black">🧲 MAGNET ACTIVE</span>
+                </div>
+                <div class="bg-orange-500/15 backdrop-blur-xl px-2.5 py-1.5 rounded-xl border border-orange-500/30 text-[10px] hidden" id="grant-mac-count-badge">
+                    <span class="text-orange-400 font-black" id="grant-mac-text">🍔 MACS: 0/20</span>
+                </div>
+                <div class="bg-emerald-500/10 backdrop-blur-xl px-2.5 py-1.5 rounded-xl border border-emerald-500/30 text-[10px] hidden" id="claren-climb-badge">
+                    <span id="claren-climb-text" class="text-emerald-400 font-black">🐨 CLIMBING: 20s</span>
                 </div>
             </div>
             <div class="bg-pink-500/10 backdrop-blur-xl px-3 py-1.5 rounded-xl border border-pink-500/30 flex items-center gap-2 text-xs hidden" id="heart-mult-badge">
@@ -399,7 +418,9 @@
             { id: 'hubert', name: 'Hubert ⛏️', desc: 'Slightly lower jump, but massive crystal spawns!', elite: true },
             { id: 'sean', name: 'Sean 🐬', desc: 'Water splashes on jump! Rides a neon fish in fever mode!', elite: true },
             { id: 'curtis', name: 'Curtis 🔥', desc: 'Decreased normal jump, but extended fever & +15% Heart Spawns!', elite: true },
-            { id: 'viggo', name: 'Viggo 👑', desc: 'Has 5 lives! Fever replaced with reality-shattering inverted Fracture Mode!', elite: true }
+            { id: 'viggo', name: 'Viggo 👑', desc: 'Has 5 lives! Fever replaced with reality-shattering inverted Fracture Mode!', elite: true },
+            { id: 'grant', name: 'Grant 🍔', desc: '40% Grand Slam chance! Eats Big Macs for Super Farts!', elite: true },
+            { id: 'ethan', name: 'Ethan 🏀', desc: 'Slam Dunks on Basketball Hoops for mega altitude!', elite: true }
         ];
         const leagueRanksDatabase = [
             { threshold: 0, title: "Math Cadet ✏️", color: "#94a3b8" },
@@ -440,7 +461,7 @@
         let player = { x: 0, y: 0, r: 14, vx: 0, vy: 0, trail: [], squishX: 1, squishY: 1 };
         
         let comboCount = 0, floatingTexts = [], shockwaves = [], parallaxStars = [];
-        let feverMode = false, feverTimer = 0, crystalCombo = 0, feverLockoutCooldownTicks = 0; 
+        let feverMode = false, fractureMode = false, feverTimer = 0, crystalCombo = 0, feverLockoutCooldownTicks = 0; 
         let currentMathSessionIndex = 1, totalSessionQuestions = 5, calculatedThrustFuel = 0; 
         let liveFlightFuelMax = 100, liveFlightFuel = 100, mathStreak = 0, mathActive = false, mathAnswerCorrect = null;
         let nextGateY = -600, activeGateQuestion = null, activeGamemode = 'classic';
@@ -450,6 +471,17 @@
         let heartMultiplierActive = false, heartMultiplierTimerTicks = 0;
         let shieldActive = false, magnetActive = false, magnetTimerTicks = 0, viggoLives = 5;
         let audioCtx = null, ambientOsc = null, ambientGain = null;
+
+        // Custom Grant/Ethan/Claren Variables
+        let grantBigMacsEaten = 0;
+        let grantMacBoostTimer = 0;
+        let grantMacDebuffTimer = 0;
+        let clarenClimbTimer = 0;
+        let hasKoalaCompanion = false;
+
+        // Custom Admin Lock Triggers
+        let lastViggoClickTime = 0;
+        let lastGrantClickTime = 0;
 
         // Load Global Balances Securely
         window.gangConceptsCount = parseInt(localStorage.getItem('gj_gang_concepts_v6')) || 0;
@@ -618,6 +650,15 @@
                     osc.start(now);
                     osc.stop(now + 0.35);
                 }
+                else if (type === 'splash') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(200, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                }
             } catch (e) {
                 console.warn("Audio play blocked or failed.", e);
             }
@@ -662,7 +703,7 @@
         }
 
         // --- MUTE CONTROLLER SYSTEM ---
-        window.toggleMute = function() {
+        function toggleMute() {
             window.isMuted = !window.isMuted;
             localStorage.setItem('gj_muted', window.isMuted);
 
@@ -688,7 +729,42 @@
                 }
                 playSound('bounce');
             }
-        };
+        }
+
+        // --- PASSWORD OVERLAY SYSTEM (REPLACES LAB CLICK OVERRIDES) ---
+        function openPasskeyModal() {
+            const modal = document.getElementById('password-modal');
+            const pInput = document.getElementById('passkey-input');
+            if (modal && pInput) {
+                pInput.value = '';
+                modal.classList.remove('hidden-screen');
+                setTimeout(() => pInput.focus(), 100);
+            }
+        }
+
+        function closePasskeyModal() {
+            const modal = document.getElementById('password-modal');
+            if (modal) {
+                modal.classList.add('hidden-screen');
+            }
+        }
+
+        function submitPasskey() {
+            const pInput = document.getElementById('passkey-input');
+            if (!pInput) return;
+            
+            const rawVal = pInput.value.trim().toLowerCase();
+            // Supports clean beach party password phrase securely
+            if (rawVal === "you should throw a beach party" || rawVal === "you should throw a f beach party") {
+                playSound('boost');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                addFloatingText(width / 2, height / 2, "🔓 ROOT ACCESS GRANTED!", '#10b981');
+                closePasskeyModal();
+            } else {
+                playSound('shatter');
+                addFloatingText(width / 2, height / 2, "❌ ACCESS DENIED! BAD PASSKEY", '#ef4444');
+            }
+        }
 
         // --- GLOBALIZED RESIZE ACTION ---
         window.resizeGameCanvas = function() {
@@ -808,13 +884,14 @@
             if (chosen === correct) {
                 mathStreak++;
                 playSound('pi');
-                calculatedThrustFuel += Math.round(15 * (1 + (mathStreak * 0.2)));
+                // FIXED FUEL: MULTIPLIED REWARD BY 10x
+                calculatedThrustFuel += Math.round(150 * (1 + (mathStreak * 0.5)));
                 addFloatingText(width/2, height/2, `CORRECT! STREAK x${mathStreak}`, '#10b981');
             } else {
                 mathStreak = 0;
                 playSound('shatter');
-                calculatedThrustFuel += 5;
-                addFloatingText(width/2, height/2, "INCORRECT (+5L)", '#ef4444');
+                calculatedThrustFuel += 50; // increased fallback reward too!
+                addFloatingText(width/2, height/2, "INCORRECT (+50L)", '#ef4444');
             }
 
             document.getElementById('projected-fuel').innerText = `${calculatedThrustFuel} Litres`;
@@ -851,6 +928,19 @@
         window.selectSkin = function(skinId) {
             initAudio();
             playSound('crystal');
+            
+            let now = Date.now();
+            if (skinId === 'viggo') lastViggoClickTime = now;
+            if (skinId === 'grant') lastGrantClickTime = now;
+            
+            // DOUBLE-USE DETECTION: Triggers Passphrase modal if both clicked within 600ms
+            if (Math.abs(lastViggoClickTime - lastGrantClickTime) < 600) {
+                lastViggoClickTime = 0;
+                lastGrantClickTime = 0;
+                openPasskeyModal();
+                return;
+            }
+
             window.selectedSkin = skinId;
             localStorage.setItem('gj_selected_skin_v6', window.selectedSkin);
             renderSkinsSelector();
@@ -859,6 +949,17 @@
 
         window.buySkin = function(skinId, cost, currency) {
             initAudio();
+            
+            let now = Date.now();
+            if (skinId === 'viggo') lastViggoClickTime = now;
+            if (skinId === 'grant') lastGrantClickTime = now;
+            if (Math.abs(lastViggoClickTime - lastGrantClickTime) < 600) {
+                lastViggoClickTime = 0;
+                lastGrantClickTime = 0;
+                openPasskeyModal();
+                return;
+            }
+
             if (currency === 'sparks' && window.sparksBalance >= cost) {
                 window.sparksBalance -= cost;
                 window.unlockedSkins.push(skinId);
@@ -916,7 +1017,7 @@
                     actionBtnHTML = `<button onclick="window.selectSkin('${skin.id}')" class="text-[8px] bg-white/10 text-white font-black px-1.5 py-0.5 rounded hover:bg-white/25">Use</button>`;
                 } else {
                     if (isGang) {
-                        actionBtnHTML = `<span class="text-[8px] text-cyan-300 font-bold">Locked</span>`;
+                        actionBtnHTML = `<button onclick="window.selectSkin('${skin.id}')" class="text-[8px] text-cyan-300 font-bold bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/20 hover:bg-cyan-500/20">Locked</button>`;
                     } else if (skin.isPiCraft) {
                         actionBtnHTML = `<button onclick="window.craftPiSkin()" class="text-[8px] bg-emerald-500 text-black font-black px-1.5 py-0.5 rounded">Craft (4π)</button>`;
                     } else if (skin.costSparks > 0) {
@@ -983,7 +1084,7 @@
             }
         }
 
-        window.buyItem = function(id, price, currency) {
+        function buyItem(id, price, currency) {
             initAudio();
             const item = [...sparkItems, ...shardItems].find(i => i.id === id);
             if (!item.consumable && window.inventory[id]) return;
@@ -1008,9 +1109,9 @@
             localStorage.setItem('gj_inv_v6', JSON.stringify(window.inventory));
             renderShops();
             updateCurrencyUI();
-        };
+        }
 
-        window.decodeConceptNotebook = function() {
+        function decodeConceptNotebook() {
             initAudio();
             if (window.gangConceptsCount >= 3) {
                 const unowned = gangSkinsDatabase.filter(gs => !window.unlockedGangSkins.includes(gs.id));
@@ -1034,27 +1135,9 @@
                 playSound('shatter');
                 addFloatingText(width/2, height/2, "NEED 3 CONCEPT BLUEPRINTS! 📘", '#ef4444');
             }
-        };
+        }
 
-        window.clickLabHeader = function() {
-            let now = Date.now();
-            initAudio();
-            playSound('bounce');
-            if (now - lastLabClickTimestamp < 600) {
-                rapidLabClicks++;
-                if (rapidLabClicks >= 4) { 
-                    document.getElementById('admin-panel').classList.remove('hidden');
-                    playSound('boost');
-                    addFloatingText(width/2, height/2, "⚠️ SYSTEM BYPASS ACTIVE", '#ef4444');
-                    rapidLabClicks = 0;
-                }
-            } else {
-                rapidLabClicks = 1;
-            }
-            lastLabClickTimestamp = now;
-        };
-
-        window.adminCheat = function(type) {
+        function adminCheat(type) {
             initAudio();
             playSound('pi');
             if (type === 'sparks') {
@@ -1100,6 +1183,12 @@
         function getPlayerBaseJumpPower() {
             if (window.selectedSkin === 'yoon_ah') return -24; 
             if (window.selectedSkin === 'hubert' || window.selectedSkin === 'curtis') return -17; 
+            if (window.selectedSkin === 'grant') {
+                // Grant's complex burger status rules
+                if (grantMacBoostTimer > 0) return -28; // High speed jump
+                if (grantMacDebuffTimer > 0) return -12; // Tired / heavy jump
+                return -16; // naturally has less jump height overall
+            }
             return window.inventory.jump_height ? -23 : -20; 
         }
         function getNotebookSpawnRate() { return 0.06; }
@@ -1199,7 +1288,7 @@
             hud.classList.add('hidden');
 
             playSound('shatter');
-            setTimeout(() => playSound('explosion'), 200);
+            setTimeout(() => playSound('shatter'), 200);
 
             let start = Date.now();
             let duration = 1800; 
@@ -1224,7 +1313,7 @@
                     cCtx.fillRect(0, 0, width, height);
                 }
 
-                cCtx.strokeStyle = progress < 0.7 ? '#000000' : 'rgba(6, 182, 212, 0.8)';
+                cCtx.strokeStyle = progress < 0.7 ? '#000000' : 'rgba(168, 85, 247, 0.8)';
                 cCtx.lineWidth = 3 * (1 - progress);
                 crackLines.forEach(line => {
                     cCtx.beginPath();
@@ -1239,7 +1328,7 @@
                 cCtx.translate(shake, shake);
 
                 cCtx.shadowBlur = 30;
-                cCtx.shadowColor = '#06b6d4';
+                cCtx.shadowColor = '#8b5cf6';
                 cCtx.fillStyle = progress < 0.7 ? '#000' : '#ffffff';
                 cCtx.font = '900 48px Outfit';
                 cCtx.textAlign = 'center';
@@ -1281,26 +1370,27 @@
             let powerupType = (!hasHeart && Math.random() < 0.07) ? (Math.random() > 0.5 ? 'shield' : 'magnet') : null;
             let hasConceptNotebook = (!hasHeart && !powerupType && Math.random() < getNotebookSpawnRate());
 
+            // ETHAN SPECIFIC: Spawns a basketball hoop above platforms
+            let hasHoop = (window.selectedSkin === 'ethan' && !hasHeart && !powerupType && !hasConceptNotebook && Math.random() < 0.25);
+
             platforms.push({ 
                 x: px, y: y, w: w, color, hit: false, decay, timer: 0, 
-                ruleValue, hasHeart, powerupType, hasConceptNotebook, hasClarenTree: false 
+                ruleValue, hasHeart, powerupType, hasConceptNotebook, hasClarenTree: false,
+                hasHoop: hasHoop
             });
             
-            if(Math.random() < getCrystalSpawnRate() && !hasHeart && !powerupType && !hasConceptNotebook) {
+            // GRANT SPECIFIC: Spawn Big Macs on platforms
+            if (window.selectedSkin === 'grant' && !hasHeart && !powerupType && !hasConceptNotebook && Math.random() < 0.30) {
+                gameItems.push({ 
+                    type: 'big-mac',
+                    x: px + (w / 2), y: y - 30, r: 11, collected: false, phase: Math.random() * 10 
+                });
+            } else if(Math.random() < getCrystalSpawnRate() && !hasHeart && !powerupType && !hasConceptNotebook) {
                 gameItems.push({ 
                     type: Math.random() < 0.03 ? 'pi-shard' : 'normal',
                     x: px + (w / 2), y: y - 30, r: 10, collected: false, phase: Math.random() * 10 
                 });
             }
-        }
-
-        // --- NEW COGNITIVE LEAGUE PROGRESS SEARCH HELPER ---
-        function getCurrentLeagueIndex(alt) {
-            let index = 0;
-            for(let i=0; i<leagueRanksDatabase.length; i++) {
-                if (alt >= leagueRanksDatabase[i].threshold) index = i;
-            }
-            return index;
         }
 
         // --- TRICK TRIGGERS AND ABILITIES DETECTORS ---
@@ -1348,12 +1438,24 @@
 
         function activateFeverMode() {
             crystalCombo = 0;
-            feverMode = true;
-            feverTimer = getFeverDuration();
-            player.vy = -32;
-            playSound('boost');
-            triggerScreenShockwave(player.x, player.y, '#ec4899');
-            addFloatingText(player.x, player.y - 30, "HYPER DRIVE ACTIVATED!", '#ec4899');
+            if (window.selectedSkin === 'viggo') {
+                triggerViggoFractureMode(() => {
+                    fractureMode = true;
+                    gameActive = true; 
+                    feverTimer = getFeverDuration();
+                    player.vy = -32;
+                    hud.classList.remove('hidden'); 
+                    addFloatingText(player.x, player.y - 30, "FRACTURE MATRIX INITIATED!", '#8b5cf6');
+                });
+            } else {
+                feverMode = true;
+                feverTimer = getFeverDuration();
+                // Grant fever has lower altitude speed
+                player.vy = (window.selectedSkin === 'grant') ? -18 : -32;
+                playSound('boost');
+                triggerScreenShockwave(player.x, player.y, '#ec4899');
+                addFloatingText(player.x, player.y - 30, "HYPER DRIVE ACTIVATED!", '#ec4899');
+            }
         }
 
         // --- NEW MATH SESSION QUESTION GENERATOR ROUTINE ---
@@ -1392,13 +1494,23 @@
                 document.getElementById('fuel-gauge-container').classList.remove('hidden');
             }
 
-            // Apply special Viggo custom HUD adjustment
+            // Apply special HUD elements
             if (window.selectedSkin === 'viggo') {
                 viggoLives = 5;
                 document.getElementById('viggo-lives-container').classList.remove('hidden');
                 document.getElementById('viggo-lives-display').innerText = "5/5";
             } else {
                 document.getElementById('viggo-lives-container').classList.add('hidden');
+            }
+
+            if (window.selectedSkin === 'grant') {
+                grantBigMacsEaten = 0;
+                grantMacBoostTimer = 0;
+                grantMacDebuffTimer = 0;
+                document.getElementById('grant-mac-count-badge').classList.remove('hidden');
+                document.getElementById('grant-mac-text').innerText = "🍔 MACS: 0/20";
+            } else {
+                document.getElementById('grant-mac-count-badge').classList.add('hidden');
             }
 
             player.x = width / 2;
@@ -1416,10 +1528,13 @@
             comboCount = 0;
             crystalCombo = 0;
             feverMode = false;
+            fractureMode = false;
             activeHeartBoost = false;
             magnetActive = false;
             shieldActive = false;
             heartMultiplierActive = false;
+            clarenClimbTimer = 0;
+            hasKoalaCompanion = false;
             
             spawnPlatform(height - 100);
             for(let i=0; i<15; i++) {
@@ -1469,7 +1584,7 @@
                     x: x, y: y,
                     vx: (Math.random() - 0.5) * 8,
                     vy: -Math.random() * 6 - 2,
-                    life: 1.0, color: '#38bdf8', size: Math.random()*3 + 1
+                    life: 1.0, color: '#22d3ee', size: Math.random()*3 + 1
                 });
             }
         }
@@ -1484,12 +1599,24 @@
             ctx.fillStyle = '#01020d';
             ctx.fillRect(0, 0, width, height);
 
-            const altitudeRatio = Math.min(1.0, Math.max(0, -cameraY / 15000));
-            const nebGrd = ctx.createRadialGradient(width/2, height/2 - cameraY*0.2, 10, width/2, height/2 - cameraY*0.2, width);
-            nebGrd.addColorStop(0, `rgba(${Math.floor(6 + 30 * altitudeRatio)}, ${Math.floor(10 + 10 * (1 - altitudeRatio))}, ${Math.floor(32 + 50 * altitudeRatio)}, 0.2)`);
-            nebGrd.addColorStop(1, 'rgba(1, 2, 13, 0)');
-            ctx.fillStyle = nebGrd;
-            ctx.fillRect(0, 0, width, height);
+            if (fractureMode) {
+                // Inverted dark glitch space background for Viggo Matrix Fracture Mode!
+                ctx.fillStyle = '#060214';
+                ctx.fillRect(0, 0, width, height);
+
+                const nebGrd = ctx.createRadialGradient(width/2, height/2 - cameraY*0.2, 10, width/2, height/2 - cameraY*0.2, width);
+                nebGrd.addColorStop(0, 'rgba(168, 85, 247, 0.25)'); 
+                nebGrd.addColorStop(1, 'rgba(2, 15, 6, 0)'); 
+                ctx.fillStyle = nebGrd;
+                ctx.fillRect(0, 0, width, height);
+            } else {
+                const altitudeRatio = Math.min(1.0, Math.max(0, -cameraY / 15000));
+                const nebGrd = ctx.createRadialGradient(width/2, height/2 - cameraY*0.2, 10, width/2, height/2 - cameraY*0.2, width);
+                nebGrd.addColorStop(0, `rgba(${Math.floor(6 + 30 * altitudeRatio)}, ${Math.floor(10 + 10 * (1 - altitudeRatio))}, ${Math.floor(32 + 50 * altitudeRatio)}, 0.2)`);
+                nebGrd.addColorStop(1, 'rgba(1, 2, 13, 0)');
+                ctx.fillStyle = nebGrd;
+                ctx.fillRect(0, 0, width, height);
+            }
             
             ctx.save();
             parallaxStars.forEach(star => {
@@ -1500,7 +1627,7 @@
                 }
                 
                 if (star.mathGlyph) {
-                    ctx.fillStyle = 'rgba(100, 116, 139, 0.15)';
+                    ctx.fillStyle = fractureMode ? 'rgba(139, 92, 246, 0.2)' : 'rgba(100, 116, 139, 0.15)';
                     ctx.font = '700 24px Outfit';
                     ctx.fillText(star.mathGlyph, star.x, star.y);
                 } else {
@@ -1516,13 +1643,31 @@
                 updateAmbientMusicPitch(Math.max(0, Math.floor(-cameraY/10)));
 
                 if (activeGamemode === 'classic') {
-                    if (!feverMode && !activeHeartBoost) {
+                    if (!feverMode && !fractureMode && !activeHeartBoost) {
                         liveFlightFuel -= 0.12; 
                     }
                 } else if (activeGamemode === 'blitz') {
-                    if (!feverMode && !activeHeartBoost) {
+                    if (!feverMode && !fractureMode && !activeHeartBoost) {
                         liveFlightFuel -= 0.22; 
                     }
+                }
+
+                // Grant/Ethan Active State Timers
+                if (grantMacBoostTimer > 0) {
+                    grantMacBoostTimer--;
+                    if (grantMacBoostTimer <= 0) {
+                        grantMacDebuffTimer = 300; // Enter fatigue fatigue phase for 5 seconds
+                        addFloatingText(player.x, player.y - 30, "MAC FATIGUE! COOLDOWN ENGAGED", '#fca5a5');
+                    }
+                }
+                if (grantMacDebuffTimer > 0) {
+                    grantMacDebuffTimer--;
+                }
+
+                // Claren climbing mode update
+                if (clarenClimbTimer > 0) {
+                    clarenClimbTimer--;
+                    player.vy = -6.5; // continuous stable climb upwards
                 }
 
                 if (heartMultiplierActive) {
@@ -1591,16 +1736,21 @@
                     feverLockoutCooldownTicks--;
                 }
 
-                if (feverMode) {
+                if (feverMode || fractureMode) {
                     feverTimer--;
                     if (feverTimer <= 0) {
-                        feverMode = false;
-                        addFloatingText(player.x, player.y - 30, "FEVER ENDING (COOLDOWN SYSTEM ON)", '#a855f7');
+                        if (feverMode) {
+                            feverMode = false;
+                            addFloatingText(player.x, player.y - 30, "FEVER ENDING (COOLDOWN SYSTEM ON)", '#a855f7');
+                        } else {
+                            fractureMode = false;
+                            addFloatingText(player.x, player.y - 30, "FRACTURE MATRIX STABILIZED", '#8b5cf6');
+                        }
                         feverLockoutCooldownTicks = 900; 
                     }
                 }
 
-                let gravity = (feverMode || activeHeartBoost) ? 0.05 : (window.inventory.gravity_bubble > 0 ? 0.25 : 0.45);
+                let gravity = (feverMode || fractureMode || activeHeartBoost || clarenClimbTimer > 0) ? 0.05 : (window.inventory.gravity_bubble > 0 ? 0.25 : 0.45);
                 player.vy += gravity;
                 player.y += player.vy;
                 
@@ -1673,6 +1823,48 @@
                     if(player.vy > 0 && player.x + player.r > p.x && player.x - player.r < p.x+p.w && 
                        player.y+player.r > p.y && player.y+player.r < p.y+15 + player.vy) {
                         
+                        // CLAREN ABILITY GATES:
+                        if (window.selectedSkin === 'claren') {
+                            // If climbing is active, ignore collision
+                            if (clarenClimbTimer > 0) return;
+
+                            // 1. Double bounce on a platform with Eucalyptus Koala tree plants KOALASEATME companion!
+                            if (p.hasClarenTree && p.hit) {
+                                hasKoalaCompanion = true;
+                                playSound('pi');
+                                triggerScreenShockwave(player.x, player.y, '#10b981');
+                                addFloatingText(player.x, player.y - 35, "🐨 COMPANION SPAWNED: KOALASEATME!", '#10b981');
+                            }
+
+                            // 2. 10% Chance to Turn Into Koala and Climb continuously for 20 seconds
+                            if (clarenClimbTimer <= 0 && Math.random() < 0.10) {
+                                clarenClimbTimer = 1200; // 20 seconds at 60fps
+                                p.hasClarenTree = true; // leaves behind a tree on source platform
+                                playSound('boost');
+                                addFloatingText(player.x, player.y - 35, "🐨 TREE CLIMBER INITIATED!", '#10b981');
+                                return;
+                            }
+                        }
+
+                        // ETHAN SLAM DUNK: Hoop specific hit block
+                        if (window.selectedSkin === 'ethan' && p.hasHoop) {
+                            p.hasHoop = false;
+                            player.vy = -35; 
+                            playSound('boost');
+                            triggerScreenShockwave(player.x, player.y, '#f97316');
+                            // Spawns basketball sparks!
+                            for(let i=0; i<15; i++) {
+                                worldParticles.push({
+                                    x: player.x, y: player.y,
+                                    vx: (Math.random() - 0.5) * 12, vy: (Math.random() - 0.5) * 12,
+                                    life: 1.0, color: '#f97316', size: Math.random() * 4 + 4
+                                });
+                            }
+                            addFloatingText(player.x, player.y - 30, "SLAM DUNK! 🏀 3-POINTER!", '#f97316');
+                            sessionSparks += 30;
+                            return;
+                        }
+
                         if (p.hasHeart) {
                             p.hasHeart = false;
                             activeHeartBoost = true;
@@ -1749,6 +1941,29 @@
                             triggerSeanWaterSplash(player.x, player.y);
                         }
 
+                        // GRANT GRAND SLAM (40% Platform Shatter Launch)
+                        if (window.selectedSkin === 'grant' && !feverMode && !fractureMode && Math.random() < 0.40) {
+                            player.vy = -30; // Launch sky high!
+                            p.decay = true; 
+                            p.timer = 1; // instantly falls and shatters
+                            playSound('shatter');
+                            triggerScreenShockwave(player.x, player.y, '#f97316');
+                            createBurst(player.x, player.y, '#ea580c');
+                            addFloatingText(player.x, player.y - 30, "🍔 GRAND SLAM PLATFORM SMASH!", '#f97316');
+                            sessionSparks += 15;
+                            return;
+                        }
+
+                        // GRANT FEVER MODIFICATION: Auto slams everything on platform contact, but jump height way less
+                        if (window.selectedSkin === 'grant' && (feverMode || activeHeartBoost)) {
+                            player.vy = -16; // way less jump height
+                            p.decay = true; p.timer = 1;
+                            playSound('shatter');
+                            triggerScreenShockwave(player.x, player.y, '#ea580c');
+                            addFloatingText(player.x, player.y - 30, "SLAMPFIRE! 🔥", '#f97316');
+                            return;
+                        }
+
                         player.vy = getPlayerBaseJumpPower(); 
                         player.squishX = 1.6;
                         player.squishY = 0.45;
@@ -1790,12 +2005,56 @@
                 });
 
                 gameItems.forEach(item => {
-                    const pullDist = (feverMode || activeHeartBoost || magnetActive) ? 450 : (window.inventory.cosmic_magnet ? 350 : (window.inventory.magnet ? 160 : 0));
+                    const pullDist = (feverMode || fractureMode || activeHeartBoost || magnetActive) ? 450 : (window.inventory.cosmic_magnet ? 350 : (window.inventory.magnet ? 160 : 0));
                     const dx = item.x - player.x; const dy = item.y - player.y;
                     const d = Math.sqrt(dx*dx + dy*dy);
                     if(d < pullDist) { item.x -= dx*0.14; item.y -= dy*0.14; }
                     
                     if(!item.collected && d < 35) {
+                        // GRANT SPECIFIC: Eat Big Mac claimable
+                        if (item.type === 'big-mac') {
+                            item.collected = true;
+                            grantBigMacsEaten++;
+                            playSound('pi');
+                            
+                            // Temporary increased jump height boost
+                            grantMacBoostTimer = 300; // 5 seconds at 60fps
+                            grantMacDebuffTimer = 0; 
+                            
+                            createBurst(item.x, item.y, '#eab308');
+                            triggerScreenShockwave(item.x, item.y, '#eab308');
+                            addFloatingText(item.x, item.y - 25, `EATEN JUMP BOOST! (${grantBigMacsEaten}/20)`, '#fbbf24');
+                            document.getElementById('grant-mac-text').innerText = `🍔 MACS: ${grantBigMacsEaten}/20`;
+                            
+                            // 20 Big Macs reached -> Cartoon SUPER FART Launch!
+                            if (grantBigMacsEaten >= 20) {
+                                grantBigMacsEaten = 0;
+                                grantMacBoostTimer = 0;
+                                grantMacDebuffTimer = 0;
+                                document.getElementById('grant-mac-text').innerText = "🍔 MACS: 0/20";
+                                
+                                player.vy = -45; // MASSIVE upward propulsion launch!
+                                playSound('boost');
+                                triggerScreenShockwave(player.x, player.y, '#84cc16');
+                                
+                                // Procedural green cartoon gas cloud puff downwards!
+                                for (let i = 0; i < 30; i++) {
+                                    worldParticles.push({
+                                        x: player.x + (Math.random() - 0.5) * 40,
+                                        y: player.y + 15 + Math.random() * 20,
+                                        vx: (Math.random() - 0.5) * 14,
+                                        vy: Math.random() * 15 + 5, // shoots downwards
+                                        life: 1.0,
+                                        color: Math.random() > 0.4 ? '#a3e635' : '#84cc16', 
+                                        size: Math.random() * 12 + 6
+                                    });
+                                }
+                                addFloatingText(player.x, player.y - 45, "💨 SUPER FART OVERDRIVE!!! 💨", '#84cc16');
+                                sessionSparks += 100;
+                            }
+                            return;
+                        }
+
                         item.collected = true;
                         
                         if (item.type === 'pi-shard') {
@@ -1815,7 +2074,7 @@
                             triggerScreenShockwave(item.x, item.y, '#f472b6');
                             flashFact(); 
                             
-                            if (!feverMode && feverLockoutCooldownTicks <= 0 && !activeHeartBoost) {
+                            if (!feverMode && !fractureMode && feverLockoutCooldownTicks <= 0 && !activeHeartBoost) {
                                 crystalCombo++;
                                 if (crystalCombo >= getFeverMaxCrystals()) {
                                     activateFeverMode();
@@ -1839,7 +2098,7 @@
                         playSound('shatter');
                         triggerScreenShockwave(player.x, player.y, '#f43f5e');
                         addFloatingText(player.x, player.y - 30, `VIGGO DEFLECTED OUT! ${viggoLives} LIVES LEFT`, '#ef4444');
-                    } else if(window.inventory.phoenix > 0 && !feverMode && !activeHeartBoost) {
+                    } else if(window.inventory.phoenix > 0 && !feverMode && !fractureMode && !activeHeartBoost) {
                         window.inventory.phoenix--;
                         player.vy = -26; 
                         playSound('boost');
@@ -1847,7 +2106,7 @@
                         triggerScreenShockwave(player.x, player.y, '#fff');
                         localStorage.setItem('gj_inv_v6', JSON.stringify(window.inventory));
                         renderShops();
-                    } else if (feverMode || activeHeartBoost) {
+                    } else if (feverMode || fractureMode || activeHeartBoost || clarenClimbTimer > 0) {
                         player.vy = -25;
                         createBurst(player.x, player.y, '#f472b6');
                     } else {
@@ -1861,8 +2120,7 @@
 
                 player.trail.unshift({x: player.x, y: player.y}); if(player.trail.length > 12) player.trail.pop();
                 
-                // --- ROBUST PLATFORM GENERATION & GARBAGE COLLECTION PIPELINE (PREVENTS MILLION PLATFORMS BUG) ---
-                // Find the highest platform Y safely using a direct iterative scan (avoiding stack limits of spread operator)
+                // --- PLATFORM GENERATION PIPELINE ---
                 let topY = Infinity;
                 for (let i = 0; i < platforms.length; i++) {
                     if (platforms[i].y < topY) {
@@ -1870,12 +2128,10 @@
                     }
                 }
                 
-                // Spawn new platform precisely when the highest platform gets close to the camera view
                 if (topY > cameraY - 300) {
                     spawnPlatform(topY - 140);
                 }
 
-                // Actively prune platforms and items that fall far below viewport to prevent infinite array growth
                 platforms = platforms.filter(p => p.y < cameraY + height + 400);
                 gameItems = gameItems.filter(item => item.y < cameraY + height + 400);
             }
@@ -1884,7 +2140,22 @@
             ctx.save(); 
             ctx.translate(0, -cameraY);
 
-            // 1. Draw Platforms
+            // CLAREN CLIMB ABILITY: Draw climbing wood column trunk behind player!
+            if (window.selectedSkin === 'claren' && clarenClimbTimer > 0) {
+                ctx.save();
+                ctx.fillStyle = '#653b1b'; // textured brown tree trunk
+                ctx.fillRect(player.x - 7, player.y - 250, 14, 500);
+
+                // Side green branch foliage
+                ctx.fillStyle = '#065f46';
+                ctx.beginPath();
+                ctx.arc(player.x - 14, player.y - 100, 15, 0, Math.PI * 2);
+                ctx.arc(player.x + 14, player.y + 100, 15, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // 1. Draw Platforms & Claren Eucalyptus Trees
             platforms.forEach(p => {
                 ctx.fillStyle = p.hit ? 'rgba(255,255,255,0.1)' : p.color;
                 ctx.beginPath(); ctx.roundRect(p.x, p.y, p.w, 12, 6); ctx.fill();
@@ -1893,9 +2164,83 @@
                 }
                 if (p.hasHeart) { ctx.fillStyle = '#f43f5e'; ctx.font = '12px Outfit'; ctx.fillText('❤️', p.x + p.w/2 - 4, p.y - 8); }
                 if (p.hasConceptNotebook) { ctx.fillStyle = '#22d3ee'; ctx.font = '12px Outfit'; ctx.fillText('📘', p.x + p.w/2 - 4, p.y - 8); }
+
+                // CLAREN ABILITY: Draw Koala trees planted on active platforms!
+                if (p.hasClarenTree) {
+                    ctx.save();
+                    ctx.translate(p.x + p.w / 2, p.y);
+                    
+                    // Trunk
+                    ctx.fillStyle = '#78350f';
+                    ctx.fillRect(-3, -15, 6, 15);
+                    
+                    // Eucalyptus Leaves
+                    ctx.fillStyle = '#10b981';
+                    ctx.beginPath();
+                    ctx.arc(0, -18, 8, 0, Math.PI * 2);
+                    ctx.arc(-5, -14, 6, 0, Math.PI * 2);
+                    ctx.arc(5, -14, 6, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Tiny Grey Koala face clinging to trunk
+                    ctx.fillStyle = '#94a3b8';
+                    ctx.beginPath();
+                    ctx.arc(3, -9, 3.5, 0, Math.PI * 2); // Head
+                    ctx.arc(0, -11, 1.8, 0, Math.PI * 2); // Left ear
+                    ctx.arc(6, -11, 1.8, 0, Math.PI * 2); // Right ear
+                    ctx.fill();
+
+                    // Nose
+                    ctx.fillStyle = '#1e293b';
+                    ctx.beginPath();
+                    ctx.arc(3, -9, 0.8, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.restore();
+                }
+
+                // ETHAN ABILITY: Draw retro basketball hoop above platforms!
+                if (p.hasHoop) {
+                    ctx.save();
+                    ctx.translate(p.x + p.w/2, p.y);
+                    
+                    // Backboard
+                    ctx.fillStyle = '#ffffff';
+                    ctx.strokeStyle = '#ef4444';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.roundRect(-15, -34, 30, 20, 3);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // Inner backboard target square
+                    ctx.strokeStyle = '#ef4444';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(-6, -26, 12, 10);
+
+                    // Rim (Orange Hoop)
+                    ctx.strokeStyle = '#f97316';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.ellipse(0, -14, 10, 4, 0, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    // Net mesh (criss-cross lines)
+                    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(-8, -14); ctx.lineTo(-4, -4);
+                    ctx.moveTo(8, -14); ctx.lineTo(4, -4);
+                    ctx.moveTo(-4, -14); ctx.lineTo(0, -4);
+                    ctx.moveTo(4, -14); ctx.lineTo(0, -4);
+                    ctx.moveTo(-6, -9); ctx.lineTo(6, -9);
+                    ctx.stroke();
+
+                    ctx.restore();
+                }
             });
 
-            // 2. Draw Crystals & Pi Shards
+            // 2. Draw Crystals, Pi Shards, & Grant's Burgers
             gameItems.forEach(item => {
                 if (!item.collected) {
                     item.phase += 0.08;
@@ -1904,7 +2249,6 @@
                     ctx.translate(item.x, item.y + bobbingY);
                     
                     if (item.type === 'pi-shard') {
-                        // Procedural constant matrix aura
                         ctx.shadowBlur = 15;
                         ctx.shadowColor = '#10b981';
                         ctx.strokeStyle = '#10b981';
@@ -1918,6 +2262,34 @@
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
                         ctx.fillText('π', 0, -1);
+                    } else if (item.type === 'big-mac') {
+                        // Procedural custom Big Mac Hamburger model drawing!
+                        ctx.shadowBlur = 12;
+                        ctx.shadowColor = '#ea580c';
+
+                        // Bun Top
+                        ctx.fillStyle = '#d97706'; // Golden Bun
+                        ctx.beginPath();
+                        ctx.arc(0, -4, 10, Math.PI, 0);
+                        ctx.fill();
+
+                        // Cheese / Lettuce (Green/Yellow neon layers)
+                        ctx.fillStyle = '#10b981';
+                        ctx.fillRect(-10, -4, 20, 2);
+                        ctx.fillStyle = '#fbbf24';
+                        ctx.fillRect(-8, -2, 16, 2);
+
+                        // Burger Patty
+                        ctx.fillStyle = '#78350f';
+                        ctx.beginPath();
+                        ctx.roundRect(-11, 0, 22, 3, 2);
+                        ctx.fill();
+
+                        // Bun Bottom
+                        ctx.fillStyle = '#b45309';
+                        ctx.beginPath();
+                        ctx.roundRect(-10, 3, 20, 3, 1);
+                        ctx.fill();
                     } else {
                         // Pulsating Octahedron (3D Crystal Shape)
                         ctx.shadowBlur = 20;
@@ -1932,7 +2304,6 @@
                         ctx.closePath();
                         ctx.fill();
 
-                        // Shimmer highlight facet
                         ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
                         ctx.beginPath();
                         ctx.moveTo(0, -item.r);
@@ -1949,7 +2320,7 @@
             worldParticles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
-                p.life -= 0.02; // decay life over time
+                p.life -= 0.02; 
                 
                 if (p.life > 0) {
                     ctx.save();
@@ -1972,7 +2343,7 @@
                     ctx.restore();
                 }
             });
-            worldParticles = worldParticles.filter(p => p.life > 0); // Garbage collection
+            worldParticles = worldParticles.filter(p => p.life > 0);
 
             // 4. Update & Draw Shockwaves (Pulsing Energy Rings)
             shockwaves.forEach(s => {
@@ -1989,7 +2360,7 @@
                     ctx.restore();
                 }
             });
-            shockwaves = shockwaves.filter(s => s.opacity > 0); // Garbage collection
+            shockwaves = shockwaves.filter(s => s.opacity > 0);
 
             // 5. Update & Draw Floating Combo Text
             floatingTexts.forEach(ft => {
@@ -2005,21 +2376,84 @@
                     ctx.restore();
                 }
             });
-            floatingTexts = floatingTexts.filter(ft => ft.opacity > 0); // Garbage collection
+            floatingTexts = floatingTexts.filter(ft => ft.opacity > 0);
 
             // 6. Draw Player Trail
             player.trail.forEach((t, i) => {
-                ctx.fillStyle = `rgba(6, 182, 212, ${0.4 - (i/30)})`;
+                if (fractureMode) {
+                    ctx.fillStyle = `rgba(168, 85, 247, ${0.45 - (i/30)})`; // deep fracture purple trail
+                } else if (window.selectedSkin === 'grant') {
+                    ctx.fillStyle = `rgba(249, 115, 22, ${0.4 - (i/30)})`; // grant orange grill trail
+                } else if (window.selectedSkin === 'ethan') {
+                    ctx.fillStyle = `rgba(249, 115, 22, ${0.45 - (i/30)})`; // ethan orange basketball trail
+                } else {
+                    ctx.fillStyle = `rgba(6, 182, 212, ${0.4 - (i/30)})`; // standard cyan trail
+                }
                 ctx.beginPath(); ctx.arc(t.x, t.y, player.r * (1 - i/15), 0, Math.PI*2); ctx.fill();
             });
 
-            // 7. GORGEOUS PROCEDURAL AVATARS & PROPULSION CORES (WITH SQUISH SCALING)
+            // CLAREN COMPANION ABILITY: Orbiting KOALASEATME companion drawing
+            if (hasKoalaCompanion) {
+                let angle = Date.now() * 0.003;
+                let orbitX = player.x + Math.cos(angle) * 24;
+                let orbitY = player.y + Math.sin(angle) * 24;
+                
+                ctx.save();
+                ctx.translate(orbitX, orbitY);
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#10b981';
+
+                // Face / Head
+                ctx.fillStyle = '#64748b';
+                ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI * 2); ctx.fill();
+
+                // Fluffy Grey Ears
+                ctx.fillStyle = '#64748b';
+                ctx.beginPath(); ctx.arc(-4, -4, 2, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(4, -4, 2, 0, Math.PI * 2); ctx.fill();
+
+                // Cute Nose
+                ctx.fillStyle = '#0f172a';
+                ctx.beginPath(); ctx.arc(0, 0, 1.2, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+            }
+
+            // 7. GORGEOUS ORIGINAL AVATARS & PROPULSION CORES (WITH SQUISH SCALING)
             ctx.save();
             ctx.translate(player.x, player.y);
             
+            // SEAN SPECIAL: Draw rides on a glowing neon dolphin/fish during fever overdrive!
+            if (window.selectedSkin === 'sean' && (feverMode || activeHeartBoost)) {
+                ctx.save();
+                ctx.translate(0, 10);
+                ctx.rotate(Math.sin(Date.now() * 0.015) * 0.15);
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#06b6d4';
+                ctx.fillStyle = 'rgba(6, 182, 212, 0.9)';
+                
+                // Sleek dolphin procedural body
+                ctx.beginPath();
+                ctx.ellipse(0, 0, 20, 8, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Fin Tail
+                ctx.beginPath();
+                ctx.moveTo(-20, 0);
+                ctx.lineTo(-27, -8);
+                ctx.lineTo(-25, 0);
+                ctx.lineTo(-27, 8);
+                ctx.closePath();
+                ctx.fill();
+
+                // Snout eye
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath(); ctx.arc(12, -2, 1.8, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+            }
+
             // Neon shadow system glow aura
-            ctx.shadowBlur = feverMode ? 35 : 20;
-            ctx.shadowColor = feverMode ? '#ec4899' : '#06b6d4';
+            ctx.shadowBlur = (feverMode || fractureMode) ? 35 : 20;
+            ctx.shadowColor = (feverMode || fractureMode) ? '#ec4899' : '#06b6d4';
             ctx.scale(player.squishX, player.squishY);
 
             if (window.selectedSkin === 'golden') {
@@ -2061,13 +2495,19 @@
             } else if (window.selectedSkin === 'viggo') {
                 ctx.shadowColor = '#8b5cf6';
                 ctx.fillStyle = '#f5f3ff';
+            } else if (window.selectedSkin === 'grant') {
+                ctx.shadowColor = '#f97316';
+                ctx.fillStyle = '#ea580c';
+            } else if (window.selectedSkin === 'ethan') {
+                ctx.shadowColor = '#f97316';
+                ctx.fillStyle = '#ea580c';
             } else {
                 ctx.shadowColor = '#06b6d4';
                 ctx.fillStyle = '#ffffff';
             }
 
             // Draw outer shell structures
-            if (window.selectedSkin === 'fractal' && !feverMode && !activeHeartBoost) {
+            if (window.selectedSkin === 'fractal' && !feverMode && !fractureMode && !activeHeartBoost) {
                 ctx.beginPath();
                 for (let step = 0; step < 8; step++) {
                     ctx.lineTo(0, player.r * (step % 2 === 0 ? 1 : 0.4));
@@ -2075,7 +2515,7 @@
                 }
                 ctx.closePath();
                 ctx.fill();
-            } else if (window.selectedSkin === 'prime' && !feverMode && !activeHeartBoost) {
+            } else if (window.selectedSkin === 'prime' && !feverMode && !fractureMode && !activeHeartBoost) {
                 ctx.beginPath();
                 ctx.rect(-player.r, -player.r, player.r * 2, player.r * 2);
                 ctx.fill();
@@ -2086,7 +2526,7 @@
             }
 
             // Draw procedural graphics over outer shells (Golden spiral, Concentric rings, etc.)
-            if (!feverMode && !activeHeartBoost) {
+            if (!feverMode && !fractureMode && !activeHeartBoost) {
                 if (window.selectedSkin === 'golden') {
                     ctx.strokeStyle = 'rgba(202, 138, 4, 0.5)';
                     ctx.lineWidth = 1.5;
@@ -2117,6 +2557,8 @@
             ctx.shadowBlur = 0;
             if (feverMode || activeHeartBoost) {
                 ctx.fillStyle = '#e11d48';
+            } else if (fractureMode) {
+                ctx.fillStyle = '#8b5cf6'; // Violet reality core
             } else if (window.selectedSkin === 'golden') {
                 ctx.fillStyle = '#ca8a04';
             } else if (window.selectedSkin === 'fibonacci') {
@@ -2143,6 +2585,10 @@
                 ctx.fillStyle = '#b91c1c';
             } else if (window.selectedSkin === 'viggo') {
                 ctx.fillStyle = '#6d28d9';
+            } else if (window.selectedSkin === 'grant') {
+                ctx.fillStyle = '#ffffff';
+            } else if (window.selectedSkin === 'ethan') {
+                ctx.fillStyle = '#ffffff';
             } else {
                 ctx.fillStyle = '#06b6d4';
             }
@@ -2161,6 +2607,7 @@
                 ctx.textBaseline = 'middle';
                 ctx.fillText('Φ', 0, 0);
             } else if (window.selectedSkin === 'claren' && !feverMode && !activeHeartBoost) {
+                // CLAREN ABILITY: 10% Chance to Turn into Koala 
                 ctx.fillStyle = '#ffffff';
                 ctx.font = '12px Outfit';
                 ctx.textAlign = 'center';
@@ -2196,12 +2643,36 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('🔥', 0, 0);
-            } else if (window.selectedSkin === 'viggo' && !feverMode && !activeHeartBoost) {
+            } else if (window.selectedSkin === 'grant') {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px Outfit';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🍔', 0, 0);
+            } else if (window.selectedSkin === 'ethan') {
+                // Drawing Ethan's active basketball inner sphere textures
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px Outfit';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🏀', 0, 0);
+            } else if (window.selectedSkin === 'viggo') {
                 ctx.fillStyle = '#ffffff';
                 ctx.font = '12px Outfit';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('👑', 0, 0);
+
+                if (fractureMode) {
+                    ctx.save();
+                    ctx.strokeStyle = '#a855f7';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(-16, -16); ctx.lineTo(16, 16);
+                    ctx.moveTo(16, -16); ctx.lineTo(-16, 16);
+                    ctx.stroke();
+                    ctx.restore();
+                }
             } else {
                 ctx.beginPath();
                 ctx.arc(0, 0, player.r * 0.45, 0, Math.PI * 2);
@@ -2211,6 +2682,18 @@
             ctx.restore();
             ctx.restore();
 
+            // Render Claren Climbing Hud Badge
+            const climbBadge = document.getElementById('claren-climb-badge');
+            if (climbBadge) {
+                if (window.selectedSkin === 'claren' && clarenClimbTimer > 0) {
+                    climbBadge.classList.remove('hidden');
+                    const climbText = document.getElementById('claren-climb-text');
+                    if (climbText) climbText.innerText = `🐨 CLIMBING: ${Math.ceil(clarenClimbTimer / 60)}s`;
+                } else {
+                    climbBadge.classList.add('hidden');
+                }
+            }
+
             window.updateCurrencyUI();
             requestAnimationFrame(gameLoop);
         }
@@ -2219,6 +2702,7 @@
             canvas.style.pointerEvents = 'none';
             gameActive = false;
             feverMode = false;
+            fractureMode = false;
             activeHeartBoost = false;
             heartMultiplierActive = false;
             shieldActive = false;
@@ -2228,6 +2712,7 @@
             if (multBadge) multBadge.classList.add('hidden');
             document.getElementById('shield-active-badge').classList.add('hidden');
             document.getElementById('magnet-active-badge').classList.add('hidden');
+            document.getElementById('grant-mac-count-badge').classList.add('hidden');
             
             const reachedAlt = Math.max(0, Math.floor(-cameraY/10));
             const oldLeagueIndex = getCurrentLeagueIndex(window.bestAltitude);
@@ -2314,10 +2799,12 @@
         window.renderShops = renderShops;
         window.buyItem = buyItem;
         window.decodeConceptNotebook = decodeConceptNotebook;
-        window.clickLabHeader = clickLabHeader;
         window.adminCheat = adminCheat;
         window.initAudio = initAudio;
         window.playSound = playSound;
+        window.submitPasskey = submitPasskey;
+        window.closePasskeyModal = closePasskeyModal;
+        window.toggleMute = toggleMute;
 
         safeInit();
         document.addEventListener('DOMContentLoaded', safeInit);
